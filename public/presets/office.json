@@ -1,0 +1,349 @@
+{
+ "version": 1,
+ "meta": {
+  "name": "อาคารสำนักงาน 5 ชั้น",
+  "owner": "",
+  "location": "",
+  "designer": "",
+  "checker": "",
+  "designerLicense": "",
+  "licenseTier": "",
+  "checkerLicense": "",
+  "logo": "",
+  "date": "2026-10-20",
+  "buildingType": "office",
+  "utility": "MEA",
+  "supply": "transformer",
+  "hvKV": 22,
+  "ambientAir": 40,
+  "ambientGround": 30,
+  "recVA": 180,
+  "recPerCircuit": 10,
+  "lightMaxLoading": 0.8,
+  "branchFactor": 1.25,
+  "feederFactor": 1.25,
+  "useMaxPhase": false,
+  "autoSelectivity": true,
+  "adiabaticCheck": false,
+  "egcProportional": false,
+  "coordinateKidFeeders": true,
+  "floorHeight": 3.6,
+  "vdBranch": 2,
+  "vdFeeder": 2,
+  "vdTotal": 5,
+  "lightingDF": false,
+  "lightingGround": false,
+  "minLight": 2.5,
+  "minRec": 2.5,
+  "minOther": 2.5,
+  "minFeeder": 4,
+  "cbLight": 16,
+  "cbRec": 16,
+  "branchIC": 6,
+  "branch": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "EMT"
+  },
+  "feeder": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "IMC"
+  },
+  "main": {
+   "cable": "CV",
+   "method": "g5",
+   "conduit": "IMC",
+   "length": 15,
+   "maxSize": 300
+  },
+  "hv": {
+   "length": 20
+  },
+  "sourceKA": 0,
+  "serviceKA": 25,
+  "growth": 0,
+  "spareRatio": 0.15,
+  "activeRatio": 0.8,
+  "pfNow": 0.85,
+  "pfTarget": 0.95,
+  "maxParallelSize": 300,
+  "mccbICMin": 10,
+  "phasePattern": "seq"
+ },
+ "panels": [
+  {
+   "id": "MDB",
+   "name": "MDB",
+   "kind": "MDB",
+   "phases": 3,
+   "parent": null,
+   "feederLength": 20,
+   "floor": 1
+  },
+  {
+   "id": "HVAC",
+   "name": "SDB-HVAC",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 20,
+   "floor": 1
+  },
+  {
+   "id": "LIFT",
+   "name": "LP-ลิฟต์",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 25,
+   "floor": 1
+  },
+  {
+   "id": "LP1",
+   "name": "LP-ชั้น 1",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 1
+  },
+  {
+   "id": "LP2",
+   "name": "LP-ชั้น 2",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 2
+  },
+  {
+   "id": "LP3",
+   "name": "LP-ชั้น 3",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 3
+  },
+  {
+   "id": "LP4",
+   "name": "LP-ชั้น 4",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 4
+  },
+  {
+   "id": "LP5",
+   "name": "LP-ชั้น 5",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 5
+  }
+ ],
+ "items": [
+  {
+   "id": "i1",
+   "panelId": "HVAC",
+   "qty": 2,
+   "length": 20,
+   "type": "chiller",
+   "cooling": "water",
+   "kva": 180,
+   "name": "Water-cooled Chiller 150 TR"
+  },
+  {
+   "id": "i2",
+   "panelId": "HVAC",
+   "qty": 3,
+   "length": 20,
+   "type": "motor",
+   "kw": 11,
+   "phases": 3,
+   "name": "ปั๊มน้ำเย็น CHWP"
+  },
+  {
+   "id": "i3",
+   "panelId": "HVAC",
+   "qty": 2,
+   "length": 20,
+   "type": "motor",
+   "kw": 7.5,
+   "phases": 3,
+   "name": "Cooling Tower"
+  },
+  {
+   "id": "i4",
+   "panelId": "LIFT",
+   "qty": 3,
+   "length": 20,
+   "type": "lift",
+   "preset": 20,
+   "name": "ลิฟต์โดยสาร"
+  },
+  {
+   "id": "i5",
+   "panelId": "LP1",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 60,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i6",
+   "panelId": "LP1",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 72,
+   "vaPerPoint": 180,
+   "name": "เต้ารับคอมพิวเตอร์"
+  },
+  {
+   "id": "i7",
+   "panelId": "LP1",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 36000,
+   "phases": 3,
+   "name": "แอร์แยกส่วน (ห้องประชุม/Server)"
+  },
+  {
+   "id": "i8",
+   "panelId": "LP2",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 60,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i9",
+   "panelId": "LP2",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 72,
+   "vaPerPoint": 180,
+   "name": "เต้ารับคอมพิวเตอร์"
+  },
+  {
+   "id": "i10",
+   "panelId": "LP2",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 36000,
+   "phases": 3,
+   "name": "แอร์แยกส่วน (ห้องประชุม/Server)"
+  },
+  {
+   "id": "i11",
+   "panelId": "LP3",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 60,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i12",
+   "panelId": "LP3",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 72,
+   "vaPerPoint": 180,
+   "name": "เต้ารับคอมพิวเตอร์"
+  },
+  {
+   "id": "i13",
+   "panelId": "LP3",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 36000,
+   "phases": 3,
+   "name": "แอร์แยกส่วน (ห้องประชุม/Server)"
+  },
+  {
+   "id": "i14",
+   "panelId": "LP4",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 60,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i15",
+   "panelId": "LP4",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 72,
+   "vaPerPoint": 180,
+   "name": "เต้ารับคอมพิวเตอร์"
+  },
+  {
+   "id": "i16",
+   "panelId": "LP4",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 36000,
+   "phases": 3,
+   "name": "แอร์แยกส่วน (ห้องประชุม/Server)"
+  },
+  {
+   "id": "i17",
+   "panelId": "LP5",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 60,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i18",
+   "panelId": "LP5",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 72,
+   "vaPerPoint": 180,
+   "name": "เต้ารับคอมพิวเตอร์"
+  },
+  {
+   "id": "i19",
+   "panelId": "LP5",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 36000,
+   "phases": 3,
+   "name": "แอร์แยกส่วน (ห้องประชุม/Server)"
+  }
+ ]
+}

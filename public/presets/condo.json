@@ -1,0 +1,1683 @@
+{
+ "version": 1,
+ "meta": {
+  "name": "คอนโดมิเนียม 5 ชั้น 24 ห้องชุด",
+  "owner": "",
+  "location": "",
+  "designer": "",
+  "checker": "",
+  "designerLicense": "",
+  "licenseTier": "",
+  "checkerLicense": "",
+  "logo": "",
+  "date": "2026-10-20",
+  "buildingType": "condo",
+  "utility": "MEA",
+  "supply": "transformer",
+  "hvKV": 22,
+  "ambientAir": 40,
+  "ambientGround": 30,
+  "recVA": 180,
+  "recPerCircuit": 10,
+  "lightMaxLoading": 0.8,
+  "branchFactor": 1.25,
+  "feederFactor": 1.25,
+  "useMaxPhase": false,
+  "autoSelectivity": true,
+  "adiabaticCheck": false,
+  "egcProportional": false,
+  "coordinateKidFeeders": true,
+  "floorHeight": 3.2,
+  "vdBranch": 2,
+  "vdFeeder": 2,
+  "vdTotal": 5,
+  "lightingDF": false,
+  "lightingGround": false,
+  "minLight": 2.5,
+  "minRec": 2.5,
+  "minOther": 2.5,
+  "minFeeder": 4,
+  "cbLight": 16,
+  "cbRec": 16,
+  "branchIC": 6,
+  "branch": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "EMT"
+  },
+  "feeder": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "IMC"
+  },
+  "main": {
+   "cable": "CV",
+   "method": "g5",
+   "conduit": "IMC",
+   "length": 15,
+   "maxSize": 300
+  },
+  "hv": {
+   "length": 20
+  },
+  "sourceKA": 0,
+  "serviceKA": 25,
+  "growth": 0,
+  "spareRatio": 0.15,
+  "activeRatio": 0.8,
+  "pfNow": 0.85,
+  "pfTarget": 0.95,
+  "maxParallelSize": 300,
+  "mccbICMin": 10,
+  "phasePattern": "seq"
+ },
+ "panels": [
+  {
+   "id": "MDB",
+   "name": "MDB",
+   "kind": "MDB",
+   "phases": 3,
+   "parent": null,
+   "feederLength": 20,
+   "floor": 1
+  },
+  {
+   "id": "CLP",
+   "name": "CLP-ส่วนกลาง",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 15,
+   "floor": 1,
+   "unit": "none"
+  },
+  {
+   "id": "EVP",
+   "name": "EV-ที่จอดรถ",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 20,
+   "floor": 1,
+   "unit": "none"
+  },
+  {
+   "id": "SDB2",
+   "name": "SDB-ชั้น 2",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 25,
+   "floor": 2
+  },
+  {
+   "id": "U201",
+   "name": "ห้อง 201",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "U202",
+   "name": "ห้อง 202",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "U203",
+   "name": "ห้อง 203",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "U204",
+   "name": "ห้อง 204",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "U205",
+   "name": "ห้อง 205",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "U206",
+   "name": "ห้อง 206",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB2",
+   "feederLength": 12,
+   "floor": 2,
+   "unit": "res"
+  },
+  {
+   "id": "SDB3",
+   "name": "SDB-ชั้น 3",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 25,
+   "floor": 3
+  },
+  {
+   "id": "U301",
+   "name": "ห้อง 301",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "U302",
+   "name": "ห้อง 302",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "U303",
+   "name": "ห้อง 303",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "U304",
+   "name": "ห้อง 304",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "U305",
+   "name": "ห้อง 305",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "U306",
+   "name": "ห้อง 306",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB3",
+   "feederLength": 12,
+   "floor": 3,
+   "unit": "res"
+  },
+  {
+   "id": "SDB4",
+   "name": "SDB-ชั้น 4",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 25,
+   "floor": 4
+  },
+  {
+   "id": "U401",
+   "name": "ห้อง 401",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "U402",
+   "name": "ห้อง 402",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "U403",
+   "name": "ห้อง 403",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "U404",
+   "name": "ห้อง 404",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "U405",
+   "name": "ห้อง 405",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "U406",
+   "name": "ห้อง 406",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB4",
+   "feederLength": 12,
+   "floor": 4,
+   "unit": "res"
+  },
+  {
+   "id": "SDB5",
+   "name": "SDB-ชั้น 5",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 25,
+   "floor": 5
+  },
+  {
+   "id": "U501",
+   "name": "ห้อง 501",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  },
+  {
+   "id": "U502",
+   "name": "ห้อง 502",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  },
+  {
+   "id": "U503",
+   "name": "ห้อง 503",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  },
+  {
+   "id": "U504",
+   "name": "ห้อง 504",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  },
+  {
+   "id": "U505",
+   "name": "ห้อง 505",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  },
+  {
+   "id": "U506",
+   "name": "ห้อง 506",
+   "kind": "LP",
+   "phases": 1,
+   "parent": "SDB5",
+   "feederLength": 12,
+   "floor": 5,
+   "unit": "res"
+  }
+ ],
+ "items": [
+  {
+   "id": "i1",
+   "panelId": "CLP",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 80,
+   "name": "ไฟทางเดิน/ล็อบบี้"
+  },
+  {
+   "id": "i2",
+   "panelId": "CLP",
+   "qty": 2,
+   "length": 20,
+   "type": "lift",
+   "preset": 20,
+   "name": "ลิฟต์โดยสาร"
+  },
+  {
+   "id": "i3",
+   "panelId": "CLP",
+   "qty": 2,
+   "length": 20,
+   "type": "motor",
+   "kw": 7.5,
+   "phases": 3,
+   "name": "ปั๊มน้ำ"
+  },
+  {
+   "id": "i4",
+   "panelId": "EVP",
+   "qty": 6,
+   "length": 20,
+   "type": "ev",
+   "kw": 7.4,
+   "phases": 1,
+   "name": "EV Charger 7.4 kW"
+  },
+  {
+   "id": "i5",
+   "panelId": "U201",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i6",
+   "panelId": "U201",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i7",
+   "panelId": "U201",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i8",
+   "panelId": "U201",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i9",
+   "panelId": "U201",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i10",
+   "panelId": "U202",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i11",
+   "panelId": "U202",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i12",
+   "panelId": "U202",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i13",
+   "panelId": "U202",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i14",
+   "panelId": "U202",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i15",
+   "panelId": "U203",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i16",
+   "panelId": "U203",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i17",
+   "panelId": "U203",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i18",
+   "panelId": "U203",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i19",
+   "panelId": "U203",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i20",
+   "panelId": "U204",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i21",
+   "panelId": "U204",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i22",
+   "panelId": "U204",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i23",
+   "panelId": "U204",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i24",
+   "panelId": "U204",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i25",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i26",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i27",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i28",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i29",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i30",
+   "panelId": "U205",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i31",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i32",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i33",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i34",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i35",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i36",
+   "panelId": "U206",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i37",
+   "panelId": "U301",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i38",
+   "panelId": "U301",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i39",
+   "panelId": "U301",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i40",
+   "panelId": "U301",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i41",
+   "panelId": "U301",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i42",
+   "panelId": "U302",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i43",
+   "panelId": "U302",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i44",
+   "panelId": "U302",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i45",
+   "panelId": "U302",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i46",
+   "panelId": "U302",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i47",
+   "panelId": "U303",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i48",
+   "panelId": "U303",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i49",
+   "panelId": "U303",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i50",
+   "panelId": "U303",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i51",
+   "panelId": "U303",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i52",
+   "panelId": "U304",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i53",
+   "panelId": "U304",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i54",
+   "panelId": "U304",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i55",
+   "panelId": "U304",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i56",
+   "panelId": "U304",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i57",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i58",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i59",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i60",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i61",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i62",
+   "panelId": "U305",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i63",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i64",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i65",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i66",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i67",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i68",
+   "panelId": "U306",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i69",
+   "panelId": "U401",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i70",
+   "panelId": "U401",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i71",
+   "panelId": "U401",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i72",
+   "panelId": "U401",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i73",
+   "panelId": "U401",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i74",
+   "panelId": "U402",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 8,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i75",
+   "panelId": "U402",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 10,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i76",
+   "panelId": "U402",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 2,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i77",
+   "panelId": "U402",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i78",
+   "panelId": "U402",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i79",
+   "panelId": "U403",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i80",
+   "panelId": "U403",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i81",
+   "panelId": "U403",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i82",
+   "panelId": "U403",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i83",
+   "panelId": "U403",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i84",
+   "panelId": "U404",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i85",
+   "panelId": "U404",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i86",
+   "panelId": "U404",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i87",
+   "panelId": "U404",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i88",
+   "panelId": "U404",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i89",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i90",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i91",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i92",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i93",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i94",
+   "panelId": "U405",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i95",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 14,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i96",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 16,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i97",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i98",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i99",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i100",
+   "panelId": "U406",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i101",
+   "panelId": "U501",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i102",
+   "panelId": "U501",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i103",
+   "panelId": "U501",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i104",
+   "panelId": "U501",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i105",
+   "panelId": "U501",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i106",
+   "panelId": "U502",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i107",
+   "panelId": "U502",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i108",
+   "panelId": "U502",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i109",
+   "panelId": "U502",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i110",
+   "panelId": "U502",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i111",
+   "panelId": "U503",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i112",
+   "panelId": "U503",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i113",
+   "panelId": "U503",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i114",
+   "panelId": "U503",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i115",
+   "panelId": "U503",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i116",
+   "panelId": "U504",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 12,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i117",
+   "panelId": "U504",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 14,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i118",
+   "panelId": "U504",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 4,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i119",
+   "panelId": "U504",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 12000,
+   "phases": 1,
+   "name": "แอร์ 12,000 BTU"
+  },
+  {
+   "id": "i120",
+   "panelId": "U504",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 3500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i121",
+   "panelId": "U505",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 16,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i122",
+   "panelId": "U505",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 18,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i123",
+   "panelId": "U505",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 6,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i124",
+   "panelId": "U505",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i125",
+   "panelId": "U505",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 4500,
+   "name": "เครื่องทำน้ำอุ่น"
+  },
+  {
+   "id": "i126",
+   "panelId": "U506",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 1,
+   "fixtures": 16,
+   "name": "แสงสว่าง"
+  },
+  {
+   "id": "i127",
+   "panelId": "U506",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 18,
+   "name": "เต้ารับทั่วไป"
+  },
+  {
+   "id": "i128",
+   "panelId": "U506",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "heavy",
+   "points": 6,
+   "name": "เต้ารับครัว (ใช้งานหนัก)"
+  },
+  {
+   "id": "i129",
+   "panelId": "U506",
+   "qty": 2,
+   "length": 20,
+   "type": "ac",
+   "btu": 18000,
+   "phases": 1,
+   "name": "แอร์ 18,000 BTU"
+  },
+  {
+   "id": "i130",
+   "panelId": "U506",
+   "qty": 1,
+   "length": 20,
+   "type": "heater",
+   "watt": 4500,
+   "name": "เครื่องทำน้ำอุ่น"
+  }
+ ]
+}

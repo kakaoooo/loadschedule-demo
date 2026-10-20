@@ -1,0 +1,101 @@
+/* รายงานสำหรับพิมพ์/บันทึกเป็น PDF */
+@page { size: A4 portrait; margin: 10mm; }
+@page land { size: A4 landscape; margin: 10mm; }
+
+
+/* พิมพ์เป็นกระดาษขาวเสมอ แม้หน้าจอเป็นธีมมืด (color-scheme: dark จะทำให้พื้นหลังหน้าเป็นสีดำ) */
+html, html[data-theme] { background: #fff !important; color-scheme: light !important; }
+body, html[data-theme] body { background: #fff !important; background-image: none !important; color: #1d262f; font-size: 10.5px; }
+.topbar, .tabs, main, .drawer, .scrim, .toast, .toasts, .modal, .importer { display: none !important; }
+#report { display: block !important; }
+* { animation: none !important; transition: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* หน้าสูงคงที่ (A4 พิมพ์ได้ 277 mm → เหลือ 9 mm เผื่อ) : เนื้อหา .page-b ยืดหยุ่นและถูกย่อให้พอดีด้วย fitPrintPages() ; Title Block ติดท้ายหน้าเสมอ ไม่โดนดันไปหน้าถัดไป
+   .flow = ย่อถึงขีดสุดแล้วยังไม่พอ (ตารางใหญ่มาก) → ปล่อยไหลข้ามหน้าแทนการตัดเนื้อหาทิ้ง */
+.page { break-after: page; break-inside: avoid; display: flex; flex-direction: column; height: 268mm; overflow: hidden; border: 1.2px solid #1d262f; padding: 6mm 6mm 0; }
+.page.land { page: land; height: 180mm; }
+.page.flow { height: auto; min-height: 268mm; overflow: visible; } .page.land.flow { min-height: 180mm; }
+.page.flow .page-b { overflow: visible; }
+.page.land table.dt { font-size: 9px; } .page.land table.dt th, .page.land table.dt td { padding: 2px 3px; }
+.page:last-child { break-after: auto; }
+.page-b { flex: 1 1 0; min-height: 0; overflow: hidden; }
+.page h1 { font-size: 20px; margin: 0 0 4px; }
+.page h2 { font-size: 14px; margin: 10px 0 6px; padding-bottom: 3px; border-bottom: 1.5px solid #1d262f; }
+.page h3 { font-size: 12px; margin: 10px 0 4px; }
+.page .lead { margin: 0 0 10px; color: #4f5b66; }
+.kp { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid #1d262f; margin: 8px 0; }
+.kp div { padding: 6px 8px; border-right: 1px solid #1d262f; }
+.kp div:last-child { border-right: 0; }
+.kp span { display: block; font-size: 9px; color: #4f5b66; text-transform: uppercase; letter-spacing: .5px; }
+.kp b { font: 600 14px var(--mono); }
+.wl { margin: 0; padding-left: 18px; color: #8a1c14; }
+
+/* title block แบบแบบไฟฟ้า */
+/* สูงคงที่ 15 mm ห้ามถูกตัดข้ามหน้า — ข้อความยาวถูกตัดด้วย line-clamp แทนการขยายความสูง */
+.tb { display: grid; grid-template-columns: .9fr 1.9fr 1.3fr 1.3fr 1.2fr .8fr .6fr; height: 15mm; flex: none; overflow: hidden; break-inside: avoid; border-top: 1.2px solid #1d262f; margin: 3mm -6mm 0; font-size: 9.5px; line-height: 1.25; }
+.tb > div { padding: 3px 7px; min-width: 0; overflow: hidden; border-right: 1px solid #1d262f; }
+.tb > div > div:not(.tb-k):not(.tb-lic) { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow-wrap: anywhere; }
+.tb-sub { -webkit-line-clamp: 1 !important; line-clamp: 1 !important; }
+.tb > div:last-child { border-right: 0; }
+.tb-proj { font-weight: 600; font-size: 11px; }
+.tb-sub { color: #4f5b66; }
+/* กรอบโลโก้บริษัท + เลขที่ใบอนุญาต กว. (ภฟก./สฟก./วฟก.) */
+.tb > .tb-logo { display: flex; align-items: center; justify-content: center; padding: 2px; }
+.tb-logo img { max-width: 100%; max-height: 12mm; object-fit: contain; }
+.tb-logo-ph { font: 500 8.5px var(--mono); letter-spacing: 2px; color: #9aa3ab; }
+.tb-lic { font: 500 8.8px var(--mono); color: #1d262f; }
+.tb-k { font: 500 8.5px var(--mono); letter-spacing: 1px; color: #4f5b66; }
+.tb .sheetno div:last-child { font: 600 13px var(--mono); }
+
+table.ps { font-size: 9.8px; }
+table.ps th, table.ps td { padding: 2.6px 4px; }
+table.dt { font-size: 9.5px; }
+table.dt th, table.dt td { padding: 3px 5px; }
+table.dt th { font-size: 8.5px; }
+.steps li { padding: 2px 0 2px 24px; break-inside: avoid; }
+.steps li::before { width: 16px; height: 16px; font-size: 8.5px; line-height: 14px; top: 3px; }
+.steps .f { font-size: 9.5px; }
+.cc { break-inside: avoid; margin-bottom: 6px; }
+.sld-print svg { width: 100%; height: auto; max-height: 150mm; }
+.sld .wire { stroke-dasharray: none; stroke-dashoffset: 0; }
+.sld .dem, .sld .encl { fill: none; stroke: #1d262f; } .sld .instr { fill: #fff; stroke: #1d262f; }
+.sld .load-block { fill: #111 !important; stroke: #111; } .sld .lb-t { fill: #fff !important; } /* บล็อกโหลดทึบ — พิมพ์ขาวดำได้ */
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.tag, .rcd { border-width: .8px; }
+.sld .box.em { stroke: #b3261e; } .sld .em-t { fill: #b3261e; } .sld .encl.em { stroke: #b3261e; } /* ระบบไฟฟ้าฉุกเฉิน: สีแดงคงไว้ตอนพิมพ์ */
+
+.xref { margin: 8px 0 0; font-size: 9.5px; color: #4f5b66; border-left: 3px solid #d24a0f; padding: 2px 8px; }
+.appx { font: 600 10px var(--mono); letter-spacing: 2px; text-transform: uppercase; color: #d24a0f; margin-bottom: 4px; }
+.page.calc { height: auto; min-height: 0; overflow: visible; display: block; padding-bottom: 6mm; break-inside: auto; }
+.page.calc .page-b { overflow: visible; }
+.page.calc .tb { margin: -6mm -6mm 6mm; border-top: 0; border-bottom: 1.2px solid #1d262f; }
+#ikBanner { display: none !important; }
+#selNotice { display: none !important; }   /* แถบเตือนบนจอไม่พิมพ์ (ธง IC ในตารางโหลดพิมพ์ออกมาอยู่แล้ว) */
+
+/* Panel Board Schedule บนกระดาษ */
+.pbs { font-size: 9.6px; }
+.pbs-title { padding: 4px 6px; }
+.pbs-head > div { padding: 1px 8px; }
+table.pbt th, table.pbt td { padding: 1.4px 4px; }
+table.pbt thead th { font-size: 9.2px; }
+.pbs-foot > div { padding: 4px 8px; }
+.pbs-feeder-box { font-size: 9.6px; padding: 5px 8px; }
+table.pbs-sum td { padding: 1.6px 5px; }
+.pbs-total > div { padding: 5px 8px; }
+.pbs-tv { font-size: 12px; }
+table.pbt tbody tr:hover { background: none; }
+
+
+/* หน้ากระดาษกว้างแค่ ~190mm (< 760px) จึงโดน @media (max-width) ของหน้าจอ ทำให้ตารางโหลดถูกบีบเป็นแนวตั้งแล้วล้นหน้า
+   → ล็อกเลย์เอาต์ตอนพิมพ์ให้เหมือนเดิมเสมอ */
+.pbs-head { grid-template-columns: 1.2fr .8fr 1fr; }
+.pbs-foot { grid-template-columns: 1.15fr 1fr 1fr; }
+.pbs-total { grid-template-columns: 1.15fr 1fr 130px 44px; }
+.grid2 { grid-template-columns: 1fr 1fr; }
+.board-head { grid-template-columns: 1.2fr .8fr .8fr .8fr 1fr; }
+.rules { columns: 2; }
+
+/* ===== เวอร์ชันสาธิต: พิมพ์ไม่ได้ — ซ่อนทุกอย่างเหลือแต่ข้อความ Ver.DEMO ===== */
+body.demo-mode > *:not(#demo-print-blocker) { display: none !important; }
+body.demo-mode #demo-print-blocker { display: flex !important; flex-direction: column; align-items: center; justify-content: center; height: 90vh; text-align: center; font-family: sans-serif; border: 4px dashed #dc2626; padding: 40px; }
+body.demo-mode #demo-print-blocker h1 { color: #dc2626; }

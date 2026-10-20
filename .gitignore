@@ -1,0 +1,7 @@
+node_modules/
+projects/*
+!projects/.gitkeep
+.env
+*.log
+dist-demo/
+.DS_Store

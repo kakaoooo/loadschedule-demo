@@ -1,0 +1,22 @@
+[
+ {
+  "file": "office.json",
+  "title": "อาคารสำนักงาน 5 ชั้น (HVAC สูง)",
+  "description": "Chiller/ปั๊ม/Cooling Tower สัดส่วนสูง + แสงสว่าง + เต้ารับคอมพิวเตอร์ + ลิฟต์"
+ },
+ {
+  "file": "condo.json",
+  "title": "คอนโดมิเนียม 5 ชั้น 24 ห้องชุด",
+  "description": "โหลด 1 เฟส 4 รูปแบบ (Studio/1-Bed/2-Bed/Penthouse) + ตัวคูณโหลดพร้อมกัน (วสท. ตาราง 9.3) + EV Charger + Riser หลายชั้น"
+ },
+ {
+  "file": "hospital.json",
+  "title": "โรงพยาบาล 4 ชั้น (Essential + ปั๊มดับเพลิง)",
+  "description": "ตู้ Essential ผ่าน ATS 4P + Generator + ปั๊มดับเพลิง NFPA 20 (Magnetic-only)"
+ },
+ {
+  "file": "factory.json",
+  "title": "โรงงานอุตสาหกรรม (มอเตอร์ + Capacitor Bank)",
+  "description": "มอเตอร์ 3 เฟส DOL/Star-Delta กำลังสูง + Capacitor Bank + Ik\" 30–50 kA"
+ }
+]

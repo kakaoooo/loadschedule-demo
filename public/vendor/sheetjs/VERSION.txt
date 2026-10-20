@@ -1,0 +1,4 @@
+SheetJS Community Edition 0.20.3 (xlsx.mini.min.js) — https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz
+sha256(tgz) 8dc73fc3b00203e72d176e85b50938627c7b086e607c682e8d3c22c02bb99fe8
+ใช้อ่านไฟล์ .xlsx ตอนนำเข้าเท่านั้น (โหลดเมื่อต้องใช้) — การส่งออก Excel เขียนเองใน js/xlsx-io.js
+License: Apache-2.0 (LICENSE)

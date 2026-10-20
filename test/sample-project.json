@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "meta": {
+    "name": "อาคารสำนักงานและพาณิชย์ 2 ชั้น (โครงการมาตรฐาน วสท./กฟน.)",
+    "owner": "บริษัท ตัวอย่างวิศวกรรม จำกัด",
+    "location": "กรุงเทพมหานคร",
+    "designer": "สถาปนิกและวิศวกรไฟฟ้า (วสท.)",
+    "date": "2026-10-18",
+    "buildingType": "office",
+    "utility": "MEA",
+    "supply": "transformer",
+    "hvKV": 24,
+    "ambientAir": 40,
+    "ambientGround": 30,
+    "recVA": 180,
+    "recPerCircuit": 10,
+    "lightMaxLoading": 0.8,
+    "branchFactor": 1.25,
+    "feederFactor": 1.25,
+    "cbRec": 16,
+    "vdBranch": 2,
+    "vdFeeder": 2,
+    "vdTotal": 4,
+    "branch": {
+      "cable": "IEC01",
+      "method": "g1",
+      "conduit": "EMT"
+    },
+    "feeder": {
+      "cable": "CV",
+      "method": "g7",
+      "conduit": "WIREWAY"
+    },
+    "main": {
+      "cable": "NYY",
+      "method": "g3",
+      "conduit": "UPVC",
+      "length": 15
+    },
+    "hv": {
+      "cable": "CV",
+      "conduit": "HDPE"
+    },
+    "floorHeight": 3.6,
+    "autoSelectivity": true,
+    "checker": "นายตรวจ ทดสอบ",
+    "licenseTier": "สฟก.",
+    "designerLicense": "12345",
+    "checkerLicense": "วฟก. 6789"
+  },
+  "panels": [
+    {
+      "id": "MDB",
+      "name": "MDB",
+      "kind": "MDB",
+      "phases": 3,
+      "parent": null,
+      "location": "ห้องไฟฟ้า ชั้น 1",
+      "feederLength": 0,
+      "floor": 1
+    },
+    {
+      "id": "LP1",
+      "name": "LP-1",
+      "kind": "LP",
+      "phases": 3,
+      "parent": "MDB",
+      "location": "สำนักงาน ชั้น 1",
+      "feederLength": 25,
+      "floor": 1
+    },
+    {
+      "id": "LP2",
+      "name": "LP-2",
+      "kind": "LP",
+      "phases": 3,
+      "parent": "MDB",
+      "location": "ห้องครัวและพื้นที่บริการ ชั้น 2",
+      "feederLength": 35,
+      "floor": 2
+    }
+  ],
+  "items": [
+    {
+      "id": "i101",
+      "panelId": "LP1",
+      "type": "light",
+      "name": "โคมไฟ LED สำนักงาน ชั้น 1",
+      "lamp": "led_panel",
+      "fixtures": 40,
+      "qty": 1,
+      "length": 20
+    },
+    {
+      "id": "i102",
+      "panelId": "LP1",
+      "type": "rec",
+      "duty": "general",
+      "name": "เต้ารับทั่วไป สำนักงาน (Default 16A)",
+      "points": 10,
+      "qty": 2,
+      "length": 25
+    },
+    {
+      "id": "i103",
+      "panelId": "LP1",
+      "type": "ac",
+      "name": "เครื่องปรับอากาศ VRV สำนักงาน",
+      "btu": 36000,
+      "phases": 3,
+      "qty": 1,
+      "length": 30
+    },
+    {
+      "id": "i201",
+      "panelId": "LP2",
+      "type": "rec",
+      "duty": "heavy",
+      "name": "เต้ารับครัวและแพนทรี่ (ใช้งานหนัก Default 20A RCBO)",
+      "points": 6,
+      "qty": 2,
+      "length": 20
+    },
+    {
+      "id": "i202",
+      "panelId": "LP2",
+      "type": "heater",
+      "name": "เครื่องทำน้ำร้อนแพนทรี่",
+      "watt": 4500,
+      "qty": 1,
+      "length": 15
+    },
+    {
+      "id": "i203",
+      "panelId": "LP2",
+      "type": "motor",
+      "name": "พัดลมดูดอากาศครัวพาณิชย์",
+      "kw": 3.7,
+      "start": "DOL",
+      "phases": 3,
+      "qty": 1,
+      "length": 25
+    },
+    {
+      "id": "i204",
+      "panelId": "LP2",
+      "type": "ev",
+      "name": "เครื่องชาร์จยานยนต์ไฟฟ้า AC Wallbox",
+      "kw": 7.4,
+      "phases": 1,
+      "qty": 1,
+      "length": 30
+    }
+  ]
+}

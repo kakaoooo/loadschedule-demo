@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="ls-token" content="__LS_TOKEN__">
+  <title>ตารางโหลดสำเร็จรูป — Ver.DEMO</title>
+  <!-- โฮสต์แบบ static (GitHub Pages/Netlify/Vercel ไม่ผ่าน server.js) ใช้ meta นี้ ; ส่วน header เต็ม (frame-ancestors ฯลฯ) อยู่ใน public/_headers -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1.5' y='1.5' width='29' height='29' rx='3' fill='%231d262f' stroke='%23d24a0f' stroke-width='2'/%3E%3Cpath d='M16 4v6M16 22v6M11 10.5c3-1.4 10 1 10 5.5s-2 4.5-5 5.5' stroke='%23efe9dc' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  <script src="js/theme-init.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" id="logo"></div>
+    <input class="proj-name" id="projName" type="text" spellcheck="false" aria-label="ชื่อโครงการ">
+    <span class="calc-chip" id="calcChip"><i></i><span>พร้อม</span></span>
+    <div class="tb-group" role="group" aria-label="ประวัติการแก้ไข">
+      <button class="tb-btn" data-action="undo" title="ย้อนกลับ (Ctrl+Z)" aria-label="ย้อนกลับ" disabled><span data-icon="undo"></span><span class="cnt" aria-hidden="true"></span></button>
+      <button class="tb-btn" data-action="redo" title="ทำซ้ำ (Ctrl+Y)" aria-label="ทำซ้ำ" disabled><span data-icon="redo"></span><span class="cnt" aria-hidden="true"></span></button>
+    </div>
+    <div class="spacer"></div>
+    <button class="tb-btn accent-line" data-action="open-importer" title="อัปโหลดรูป/PDF/ข้อความแล้วจัดวางอัตโนมัติ"><span data-icon="bolt"></span><span class="lbl">นำเข้าแบบ</span></button>
+    <div class="tb-group" role="group" aria-label="ไฟล์โครงการ">
+      <button class="tb-btn" data-action="open-file" title="เปิดไฟล์โครงการ (.json)"><span data-icon="up"></span><span class="lbl">เปิด</span></button>
+      <button class="tb-btn" data-action="save-file" title="บันทึกโครงการ"><span data-icon="down"></span><span class="lbl">บันทึก</span></button>
+    </div>
+    <div class="tb-group" role="group" aria-label="ส่งออก">
+      <button class="tb-btn" data-action="export-csv" title="ส่งออก CSV (เปิดด้วย Excel ได้)"><span data-icon="file"></span><span class="lbl">CSV</span></button>
+      <button class="tb-btn" data-action="export-xlsx" title="ส่งออก Excel (.xlsx) — ชีตละตาราง: ระบบประธาน, Feeder, ตารางโหลดแต่ละแผง, BOM, ข้อควรตรวจสอบ"><span data-icon="file"></span><span class="lbl">Excel</span></button>
+      <button class="tb-btn" data-action="export-dxf" title="ส่งออกผังเส้นเดียวเป็น DXF (เปิดด้วย AutoCAD ได้)"><span data-icon="file"></span><span class="lbl">DXF</span></button>
+    </div>
+    <button class="tb-btn primary" data-action="export-pdf" title="สร้างรายงาน PDF"><span data-icon="print"></span><span class="lbl">รายงาน PDF</span></button>
+    <button class="tb-btn icon" data-action="toggle-theme" title="สลับธีมมืด/สว่าง" aria-label="สลับธีมมืด/สว่าง" aria-pressed="false"><span id="themeIcon" aria-hidden="true">🌙</span></button>
+    <input type="file" id="fileInput" accept=".json,application/json" hidden>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+  <div class="ik-banner" id="ikBanner" role="alert" hidden></div>
+  <div class="sel-notice" id="selNotice" role="status" hidden></div>
+  <main id="main"></main>
+
+  <div class="scrim" id="scrim" data-action="close-drawer"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true"></aside>
+  <section class="importer" id="importer" aria-label="นำเข้าแบบ"></section>
+  <div class="modal" id="modal"></div>
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+  <div id="report"></div>
+
+  <script src="js/demo-config.js"></script>
+  <script src="js/demo-guard.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/brands.js"></script>
+  <script src="js/brandcb.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/sanitize.js"></script>
+  <script src="js/sample.js"></script>
+  <script src="vendor/tesseract/tesseract.min.js"></script>
+  <script src="js/importer.js"></script>
+  <script src="js/reader.js"></script>
+  <script src="js/xlsx-io.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/dxf.js"></script>
+  <script src="js/diff.js"></script>
+  <script src="js/brandui.js"></script>
+  <script src="js/uikit.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/demo-ui.js"></script>
+</body>
+</html>

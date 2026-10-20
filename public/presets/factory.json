@@ -1,0 +1,210 @@
+{
+ "version": 1,
+ "meta": {
+  "name": "โรงงานอุตสาหกรรม (มอเตอร์กำลังสูง + Capacitor Bank)",
+  "owner": "",
+  "location": "",
+  "designer": "",
+  "checker": "",
+  "designerLicense": "",
+  "licenseTier": "",
+  "checkerLicense": "",
+  "logo": "",
+  "date": "2026-10-20",
+  "buildingType": "warehouse",
+  "utility": "PEA",
+  "supply": "transformer",
+  "hvKV": 22,
+  "ambientAir": 40,
+  "ambientGround": 30,
+  "recVA": 180,
+  "recPerCircuit": 10,
+  "lightMaxLoading": 0.8,
+  "branchFactor": 1.25,
+  "feederFactor": 1.25,
+  "useMaxPhase": false,
+  "autoSelectivity": true,
+  "adiabaticCheck": false,
+  "egcProportional": false,
+  "coordinateKidFeeders": true,
+  "floorHeight": 5,
+  "vdBranch": 2,
+  "vdFeeder": 2,
+  "vdTotal": 5,
+  "lightingDF": false,
+  "lightingGround": false,
+  "minLight": 2.5,
+  "minRec": 2.5,
+  "minOther": 2.5,
+  "minFeeder": 4,
+  "cbLight": 16,
+  "cbRec": 16,
+  "branchIC": 6,
+  "branch": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "EMT"
+  },
+  "feeder": {
+   "cable": "IEC01",
+   "method": "g2",
+   "conduit": "IMC"
+  },
+  "main": {
+   "cable": "CV",
+   "method": "g5",
+   "conduit": "IMC",
+   "length": 15,
+   "maxSize": 300
+  },
+  "hv": {
+   "length": 20
+  },
+  "sourceKA": 0,
+  "serviceKA": 50,
+  "growth": 0,
+  "spareRatio": 0.15,
+  "activeRatio": 0.8,
+  "pfNow": 0.78,
+  "pfTarget": 0.95,
+  "maxParallelSize": 300,
+  "mccbICMin": 10,
+  "phasePattern": "seq"
+ },
+ "panels": [
+  {
+   "id": "MDB",
+   "name": "MDB",
+   "kind": "MDB",
+   "phases": 3,
+   "parent": null,
+   "feederLength": 20,
+   "floor": 1
+  },
+  {
+   "id": "MCC1",
+   "name": "MCC-1 มอเตอร์ผลิต",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 30,
+   "floor": 1
+  },
+  {
+   "id": "MCC2",
+   "name": "MCC-2 คอมเพรสเซอร์",
+   "kind": "SDB",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 40,
+   "floor": 1
+  },
+  {
+   "id": "LPO",
+   "name": "LP-สำนักงาน",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 40,
+   "floor": 2
+  },
+  {
+   "id": "LPF",
+   "name": "LP-แสงสว่างโรงงาน",
+   "kind": "LP",
+   "phases": 3,
+   "parent": "MDB",
+   "feederLength": 50,
+   "floor": 1
+  }
+ ],
+ "items": [
+  {
+   "id": "i1",
+   "panelId": "MCC1",
+   "qty": 4,
+   "length": 20,
+   "type": "motor",
+   "kw": 30,
+   "phases": 3,
+   "start": "DOL",
+   "name": "มอเตอร์สายพาน 30 kW (DOL)"
+  },
+  {
+   "id": "i2",
+   "panelId": "MCC1",
+   "qty": 3,
+   "length": 20,
+   "type": "motor",
+   "kw": 55,
+   "phases": 3,
+   "start": "DOL",
+   "name": "ปั๊มกระบวนการ 55 kW (DOL)"
+  },
+  {
+   "id": "i3",
+   "panelId": "MCC1",
+   "qty": 2,
+   "length": 20,
+   "type": "motor",
+   "kw": 75,
+   "phases": 3,
+   "start": "YD",
+   "name": "พัดลมใหญ่ 75 kW (Star-Delta)"
+  },
+  {
+   "id": "i4",
+   "panelId": "MCC2",
+   "qty": 3,
+   "length": 20,
+   "type": "motor",
+   "kw": 110,
+   "phases": 3,
+   "start": "YD",
+   "name": "คอมเพรสเซอร์ 110 kW (Star-Delta)"
+  },
+  {
+   "id": "i5",
+   "panelId": "MCC2",
+   "qty": 2,
+   "length": 20,
+   "type": "motor",
+   "kw": 132,
+   "phases": 3,
+   "start": "YD",
+   "name": "คอมเพรสเซอร์ 132 kW (Star-Delta)"
+  },
+  {
+   "id": "i6",
+   "panelId": "LPO",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 40,
+   "name": "แสงสว่างสำนักงาน"
+  },
+  {
+   "id": "i7",
+   "panelId": "LPO",
+   "qty": 1,
+   "length": 20,
+   "type": "rec",
+   "duty": "general",
+   "points": 40,
+   "name": "เต้ารับ"
+  },
+  {
+   "id": "i8",
+   "panelId": "LPF",
+   "qty": 1,
+   "length": 20,
+   "type": "light",
+   "lamp": "led-t8-18",
+   "perFixture": 2,
+   "fixtures": 120,
+   "name": "โคมไฮเบย์"
+  }
+ ]
+}
