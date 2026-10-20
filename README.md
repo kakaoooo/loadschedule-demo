@@ -39,4 +39,4 @@ npm test             # 22 ไฟล์ทดสอบ + master-spec
 ## โครงสร้างที่เพิ่มจากเวอร์ชันเต็ม
 `public/js/demo-config.js` (ค่าตั้ง) · `demo-guard.js` (ตัวดัก+ลายน้ำ+บล็อก Ctrl+P) · `supabase-client.js` · `demo-ui.js` (แถบตัวอย่าง/แชร์ลิงก์) · `sql/` · `presets/` · `scripts/` · `tests/demo-security.test.js`
 
-© เจ้าของผลงาน — สงวนลิขสิทธิ์ (ยังไม่ได้กำหนด LICENSE: ถ้าเปิด repo สาธารณะ ให้เพิ่มไฟล์ LICENSE ที่ตรงเจตนา)
+© 2026 Photsawat Suksombat — สงวนลิขสิทธิ์ ดูและทดลองใช้เพื่อประเมินเท่านั้น ห้ามใช้เชิงพาณิชย์/ดัดแปลง/เผยแพร่ต่อ — ดูเงื่อนไขใน [`LICENSE`](LICENSE) · ติดต่อผู้พัฒนา: https://www.linkedin.com/in/photsawat-suksombat
