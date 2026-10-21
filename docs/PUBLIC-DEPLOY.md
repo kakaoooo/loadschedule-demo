@@ -37,7 +37,7 @@
 ### งานดูแล
 - ล้างโครงการแชร์ที่หมดอายุ: รัน `select public.purge_expired_demo_projects();` เป็นครั้งคราว หรือเปิด extension `pg_cron` แล้ว `select cron.schedule('purge-demo', '17 3 * * *', 'select public.purge_expired_demo_projects()');`
 - ดูสถิติความสนใจ (เจ้าของโปรเจกต์ใน SQL Editor เท่านั้น): `select attempted_format, client_kind, count(*) from demo_export_logs group by 1, 2 order by 3 desc;`
-- แผนฟรีของ Supabase พักโปรเจกต์ที่ไม่มีการใช้งานนาน — ถ้าแอปโหลดตัวอย่างไม่ได้ ให้เข้า Dashboard แล้ว Restore
+- แผนฟรีของ Supabase พักโปรเจกต์ที่ไม่มีการใช้งานนาน — `.github/workflows/keepalive.yml` เรียกอ่านตัวอย่างโครงการทุก 3 วัน (ใช้ `SUPABASE_URL` / `SUPABASE_ANON_KEY` ชุดเดียวกับ Pages) ถ้า workflow ขึ้นสีแดงแปลว่าโปรเจกต์ถูกพักไปแล้ว ให้เข้า Dashboard แล้ว Restore · GitHub จะปิด workflow ตามเวลาอัตโนมัติถ้ารีโปไม่มีกิจกรรม 60 วัน ให้เข้าแท็บ Actions กด Enable
 
 ## 2. ทดสอบในเครื่องก่อนเปิดจริง
 
