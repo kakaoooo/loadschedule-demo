@@ -80,6 +80,9 @@ function build(env, outDir) {
   fs.rmSync(out, { recursive: true, force: true });
   fs.cpSync(path.join(ROOT, 'public'), out, { recursive: true });
   fs.writeFileSync(path.join(out, 'js/demo-config.js'), configText(env || {}));
+  // โทเค็นของ server.js (ใช้เฉพาะตอนรันในเครื่อง) ไม่มีความหมายบนโฮสต์ static — ตัดทิ้งไม่ให้ placeholder หลงไปขึ้นเว็บจริง (app.js อ่านไม่เจอจะใช้ค่าว่างและไม่เรียก API ในโหมดสาธิตอยู่แล้ว)
+  const idx = path.join(out, 'index.html');
+  fs.writeFileSync(idx, fs.readFileSync(idx, 'utf8').replace(/[ \t]*<meta name="ls-token" content="__LS_TOKEN__">\r?\n?/, ''));
   fs.writeFileSync(path.join(out, '.nojekyll'), '');
   const hits = scanBanned(out);
   if (hits.length) {

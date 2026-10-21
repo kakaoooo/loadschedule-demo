@@ -42,7 +42,7 @@ fs.writeFileSync(path.join(SANDBOX, 'public-private', 'secret.txt'), 'SECRET-OUT
 fs.writeFileSync(path.join(SANDBOX, 'secret.json'), '{"secret":"OUTSIDE-PROJECTS"}');
 
 const TOKEN = 'ab12'.repeat(12);
-const EXPECTED_CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+const EXPECTED_CSP = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; child-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.supabase.co data:; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
 
 const handles = [];
 let projSeq = 0;
