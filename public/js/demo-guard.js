@@ -32,7 +32,7 @@
   function modalHTML(formatName) {
     const url = safeUrl(cfg.redirectUrl), mail = safeMail(cfg.contactEmail);
     return `<div class="demo-modal-card" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
-      <div class="demo-badge">🔒 ${esc(cfg.watermarkText)}</div>
+      <div class="demo-badge">${esc(cfg.watermarkText)}</div>
       <h3 id="demo-modal-title">การนำออกไฟล์ (${esc(formatName)}) ถูกล็อกในเวอร์ชันสาธิต</h3>
       <p>เวอร์ชันนี้เปิดให้ทดลองคำนวณ ดูตารางโหลดและผังเส้นเดียวเท่านั้น — ฟังก์ชัน <strong>ส่งออก PDF, CSV, Excel (.xlsx), AutoCAD (.DXF) และพิมพ์</strong> สงวนไว้สำหรับเวอร์ชันเต็ม</p>
       <div class="demo-owner-box"><strong>พัฒนาโดย:</strong> ${esc(cfg.ownerName)}${cfg.ownerRole ? ` · ${esc(cfg.ownerRole)}` : ''}<br>

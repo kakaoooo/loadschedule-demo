@@ -27,13 +27,18 @@
       <button class="tb-btn" data-action="open-file" title="เปิดไฟล์โครงการ (.json)"><span data-icon="up"></span><span class="lbl">เปิด</span></button>
       <button class="tb-btn" data-action="save-file" title="บันทึกโครงการ"><span data-icon="down"></span><span class="lbl">บันทึก</span></button>
     </div>
-    <div class="tb-group" role="group" aria-label="ส่งออก">
-      <button class="tb-btn" data-action="export-csv" title="ส่งออก CSV (เปิดด้วย Excel ได้)"><span data-icon="file"></span><span class="lbl">CSV</span></button>
-      <button class="tb-btn" data-action="export-xlsx" title="ส่งออก Excel (.xlsx) — ชีตละตาราง: ระบบประธาน, Feeder, ตารางโหลดแต่ละแผง, BOM, ข้อควรตรวจสอบ"><span data-icon="file"></span><span class="lbl">Excel</span></button>
-      <button class="tb-btn" data-action="export-dxf" title="ส่งออกผังเส้นเดียวเป็น DXF (เปิดด้วย AutoCAD ได้)"><span data-icon="file"></span><span class="lbl">DXF</span></button>
+    <div class="export-wrap">
+      <button class="tb-btn" id="exportMenuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="exportMenu" title="ส่งออกไฟล์ (เฉพาะเวอร์ชันเต็ม)"><span data-icon="lock"></span><span class="lbl">ส่งออก</span></button>
+      <div class="export-menu" id="exportMenu" role="group" aria-label="ส่งออก (เวอร์ชันเต็มเท่านั้น)" hidden>
+        <p class="export-note">ส่งออกไฟล์ได้เฉพาะเวอร์ชันเต็ม กดเลือกชนิดไฟล์เพื่อดูรายละเอียด</p>
+        <button class="tb-btn" data-action="export-pdf" title="สร้างรายงาน PDF"><span data-icon="print"></span><span class="lbl">รายงาน PDF</span></button>
+        <button class="tb-btn" data-action="export-xlsx" title="ส่งออก Excel (.xlsx) — ชีตละตาราง: ระบบประธาน, Feeder, ตารางโหลดแต่ละแผง, BOM, ข้อควรตรวจสอบ"><span data-icon="file"></span><span class="lbl">Excel (.xlsx)</span></button>
+        <button class="tb-btn" data-action="export-csv" title="ส่งออก CSV (เปิดด้วย Excel ได้)"><span data-icon="file"></span><span class="lbl">CSV</span></button>
+        <button class="tb-btn" data-action="export-dxf" title="ส่งออกผังเส้นเดียวเป็น DXF (เปิดด้วย AutoCAD ได้)"><span data-icon="file"></span><span class="lbl">AutoCAD (.dxf)</span></button>
+      </div>
     </div>
-    <button class="tb-btn primary" data-action="export-pdf" title="สร้างรายงาน PDF"><span data-icon="print"></span><span class="lbl">รายงาน PDF</span></button>
-    <button class="tb-btn icon" data-action="toggle-theme" title="สลับธีมมืด/สว่าง" aria-label="สลับธีมมืด/สว่าง" aria-pressed="false"><span id="themeIcon" aria-hidden="true">🌙</span></button>
+    <button class="tb-btn help-cta" id="btn-open-guide" type="button" aria-haspopup="dialog" title="ช่วยเหลือ: วิธีเริ่มใช้ ความหมายของแต่ละแท็บ ทริค และศัพท์"><span data-icon="help"></span><span class="lbl">ช่วยเหลือ</span></button>
+    <button class="tb-btn icon" data-action="toggle-theme" title="สลับธีมมืด/สว่าง" aria-label="สลับธีมมืด/สว่าง" aria-pressed="false"><span id="themeIcon" aria-hidden="true"></span></button>
     <input type="file" id="fileInput" accept=".json,application/json" hidden>
   </header>
 
@@ -70,5 +75,6 @@
   <script src="js/uikit.js"></script>
   <script src="js/app.js"></script>
   <script src="js/demo-ui.js"></script>
+  <script src="js/onboarding.js"></script>
 </body>
 </html>

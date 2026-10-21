@@ -396,7 +396,7 @@
   }
   function applyTheme(t, remember) {
     document.documentElement.setAttribute('data-theme', t);
-    const ic = $('#themeIcon'); if (ic) ic.textContent = t === 'dark' ? '☀️' : '🌙';
+    const ic = $('#themeIcon'); if (ic) ic.innerHTML = t === 'dark' ? I.sun : I.moon;
     const b = $('[data-action="toggle-theme"]');
     if (b) { b.setAttribute('aria-pressed', String(t === 'dark')); b.title = t === 'dark' ? 'สลับเป็นธีมสว่าง' : 'สลับเป็นธีมมืด (สบายตาสำหรับงาน CAD)'; }
     if (remember) { try { localStorage.setItem('ls-theme', t); } catch (e) { /* ไม่มี storage: ใช้ได้เฉพาะรอบนี้ */ } }
