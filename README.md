@@ -1,42 +1,103 @@
-# ตารางโหลดสำเร็จรูป — Public Demo Edition (Ver.DEMO)
+# ตารางโหลดสำเร็จรูป (Ver.DEMO)
 
-เวอร์ชันสาธิตของ `load-schedule-app`: **คำนวณโหลด จัดเฟส ดูตารางโหลด ผังเส้นเดียว (SLD) และรายการคำนวณได้ครบ** แต่ **ส่งออก/พิมพ์ไม่ได้** (PDF, CSV, Excel, AutoCAD DXF, บันทึกไฟล์โครงการ) และทุกตาราง/ผังมีลายน้ำ `Ver.DEMO — Made by <ชื่อเจ้าของ>`
-เวอร์ชันเต็ม (ส่งออกได้ทุกแบบ) อยู่ในที่เก็บส่วนตัวของเจ้าของผลงาน
+เว็บแอปสำหรับออกแบบระบบไฟฟ้าอาคาร ใส่รายการโหลด เช่น โคมไฟ เต้ารับ แอร์ มอเตอร์ เครื่องชาร์จ EV แล้วโปรแกรมจะคำนวณให้ทั้งตารางโหลดของแต่ละแผง ขนาดเบรกเกอร์ สายไฟ สายป้อน ระบบประธาน ผังเส้นเดียว (SLD) และรายการวัสดุ
 
-> ⚠ นี่คือ **ตัวขัดขวาง ไม่ใช่การเข้ารหัส**: ข้อมูลที่แสดงบนจอ (ตาราง/ผัง) คัดลอกหรือแคปภาพได้เสมอ ส่วนที่ทำได้จริงคือ "ไม่มีโค้ดสร้างไฟล์ CAD/Excel/CSV/PDF อยู่ในซอร์ส" + ลายน้ำ + ข้อความลิขสิทธิ์ — อ่านข้อจำกัดทั้งหมดใน [`docs/DEMO-BLUEPRINT-REVIEW.md`](docs/DEMO-BLUEPRINT-REVIEW.md)
+เวอร์ชันนี้เปิดให้ทดลองใช้ ดูผลและคำนวณได้ครบ แต่ส่งออกไฟล์ (PDF, Excel, CSV, DXF) ไม่ได้
 
-## ใช้งานในเครื่อง
+## เริ่มใช้งาน
+
 ```bash
-npm start            # http://localhost:5180  (ต้องมี Node ≥ 18, ไม่ต้อง npm install)
-npm test             # 22 ไฟล์ทดสอบ + master-spec
+npm start     # เปิดที่ http://localhost:5180
+npm test      # รันชุดทดสอบทั้งหมด
 ```
 
-## สิ่งที่ถูกถอดออกจากเวอร์ชันเต็ม (ในซอร์ส ไม่ใช่แค่ซ่อนปุ่ม)
-| ไฟล์ | สถานะ |
+ใช้ Node 18 ขึ้นไป ไม่ต้อง `npm install` เพราะไม่มี dependency
+
+เปิดครั้งแรกจะเห็นตารางโหลดของโครงการตัวอย่างอาคารสำนักงาน พร้อมแถบ 3 ขั้นตอนพาลองใช้ (เลือกอาคารตัวอย่าง, แก้โหลดแล้วดูตารางเปลี่ยน, ดูสายป้อน ผัง SLD และวัสดุ) ถ้าสงสัยตรงไหนกดปุ่ม "ช่วยเหลือ" บนแถบบน มีคำอธิบายแต่ละแท็บ ทริค และความหมายของศัพท์ เช่น Ik″, IC, Riser
+
+## ทำอะไรได้บ้าง
+
+แอปมี 8 แท็บ
+
+| แท็บ | ใช้ทำอะไร |
 | --- | --- |
-| `public/js/dxf.js` | เหลือ stub (เรียก `build()` = หน้าต่าง Ver.DEMO) — ไม่มีโค้ดเขียน DXF |
-| `public/js/xlsx-io.js` | ถอด writer/zip/สไตล์ออก เหลือ **อ่านไฟล์นำเข้า** เท่านั้น |
-| `public/js/export.js` | ถอดตัวสร้าง CSV และรายงาน PDF ; ตัวแสดงตาราง/SLD บนจอยังอยู่ (+ลายน้ำ) |
-| `public/js/app.js` | ทุกปุ่ม/ทางออกผ่าน `DemoGuard.interceptExport()` ; `download()` เป็นด่านสุดท้าย ; ไม่คุยกับ `server.js` |
+| ภาพรวม | สรุปโหลดรวม หม้อแปลง คำเตือน จัดการหลายแปลน เทียบแปลน และดูประวัติการแก้ไข |
+| ออกแบบ | สร้างแผง (MDB / SDB / LP) กำหนดชั้น และเพิ่มโหลด |
+| ตารางโหลด | ตารางโหลดของแต่ละแผง จัดเฟส A/B/C ด้วย Balance Load ปรับเบรกเกอร์รายวงจร |
+| สายป้อน & ระบบประธาน | สายป้อนระหว่างแผง แรงดันตก กระแสลัดวงจร หม้อแปลง สายประธาน |
+| ผังเส้นเดียว | วาด SLD จากผลคำนวณ |
+| วิธีคำนวณ | สูตรและขั้นตอน ไล่ดูที่มาของตัวเลขได้ทีละบรรทัด |
+| รายการวัสดุ | ปริมาณสาย ท่อ เบรกเกอร์ |
+| ตั้งค่าโครงการ | เกณฑ์ออกแบบ ความสูงต่อชั้น ข้อมูลโครงการ ยี่ห้อเบรกเกอร์ |
 
-`npm run build:demo` สร้าง `dist-demo/` และ **ล้มทันที** ถ้าพบร่องรอยโค้ดส่งออก (DXF/xlsx/CSV/รายงาน) หรือคีย์ลับ (service_role / `sb_secret_`) ใน `public/`
+ความสามารถอื่น ๆ
 
-## Supabase (ตัวอย่างโครงการ · แชร์ลิงก์ · สถิติความสนใจ)
-> ขั้นตอนเปิดสาธารณะแบบละเอียด (รวมโปรเจกต์ Supabase ที่สร้างไว้ + เช็กลิสต์): [`docs/PUBLIC-DEPLOY.md`](docs/PUBLIC-DEPLOY.md)
+- **นำเข้าจากแบบ** อ่านรูป PDF Excel หรือข้อความตารางโหลด (OCR ไทย/อังกฤษทำงานในเครื่อง ไม่อัปโหลดไฟล์ไปไหน) แล้วจัดลงแผงให้
+- **เบรกเกอร์ตามยี่ห้อ** เลือกรุ่นจากฐานข้อมูลที่กรองตาม AT, Icu และจำนวนขั้ว
+- **คำนวณเบื้องหลัง** ใช้ Web Worker หน้าจอจึงไม่กระตุกระหว่างพิมพ์
+- **Undo / Redo** ย้อนหลังได้ 30 ขั้น ค้นหาแผงด่วนด้วย Ctrl+K
+- **เก็บข้อมูลในเบราว์เซอร์** (localStorage) ปิดแล้วเปิดใหม่ข้อมูลยังอยู่ มีธีมมืด/สว่าง และใช้งานบนมือถือได้
 
-ปิดอยู่จนกว่าจะตั้งค่า (ไม่ตั้ง = แอปทำงานได้เต็มโดยไม่ยิงเครือข่าย)
-1. สร้างโปรเจกต์ Supabase → SQL Editor รัน `sql/supabase-demo-schema.sql` แล้ว `sql/seed-demo-presets.sql` (สร้างใหม่ด้วย `npm run seed:presets`)
-2. ใส่ค่า **ตอน build** (ไม่ commit ลง repo): `SUPABASE_URL`, `SUPABASE_ANON_KEY` (anon/publishable เท่านั้น), `DEMO_REDIRECT_URL`, `DEMO_CONTACT_EMAIL`, `DEMO_OWNER_NAME`
+อ้างอิงตารางและเกณฑ์ตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย (วสท.) ส่วนกระแสลัดวงจรคำนวณแบบย่อตาม IEC 60909
+
+## โครงสร้างโค้ด
+
+```
+public/              ตัวเว็บทั้งหมด (HTML, CSS, JavaScript ล้วน ไม่มีขั้นตอน build)
+  js/engine.js         ตัวคำนวณหลัก: โหลด เฟส เบรกเกอร์ สาย แรงดันตก ลัดวงจร หม้อแปลง
+  js/data.js           ตารางอ้างอิง (สาย ท่อ เบรกเกอร์ ตัวคูณ) ตามเอกสาร วสท.
+  js/worker.js         รัน engine ใน Web Worker
+  js/app.js            หน้าจอทั้งหมด: แท็บ ฟอร์ม ตาราง ลากวาง Undo
+  js/uikit.js          ตรรกะ UI ที่ไม่แตะ DOM (ประวัติ Undo คีย์ลัด ค้นหาแผง) ทดสอบใน Node ได้
+  js/export.js         สร้างตารางและผัง SLD ที่แสดงบนหน้าจอ
+  js/importer.js       แปลงข้อความ/ตารางเป็นรายการโหลดและจัดลงแผง
+  js/reader.js         อ่านไฟล์ที่อัปโหลด (txt csv xlsx pdf รูป)
+  js/sanitize.js       ตรวจและล้างไฟล์โครงการก่อนใช้
+  js/diff.js           เทียบโครงการสองฉบับ
+  js/brands.js         ฐานข้อมูลเบรกเกอร์ (สร้างจาก data/brands ด้วย tools/import-brands.js)
+  js/brandcb.js        เลือกรุ่นเบรกเกอร์ตามยี่ห้อ
+  js/brandui.js        หน้าจอเลือกยี่ห้อและรุ่น
+  js/onboarding.js     แถบ 3 ขั้นตอน หน้าต่างช่วยเหลือ และปุ่ม (i) อธิบายศัพท์
+  js/demo-*.js         ส่วนของเวอร์ชันสาธิต: ค่าตั้ง ลายน้ำ เมนูตัวอย่างโครงการ
+  presets/             โครงการตัวอย่าง 4 แบบ (สำนักงาน คอนโด โรงพยาบาล โรงงาน)
+  vendor/              ไลบรารีที่ใช้ในเครื่อง ได้แก่ Tesseract (OCR), pdf.js, SheetJS
+data/brands/         ข้อมูลต้นฉบับของเบรกเกอร์ (CSV) และแหล่งอ้างอิง
+tests/, test/        ชุดทดสอบ (engine, import, security, layout ฯลฯ)
+tools/               สคริปต์ช่วย: นำเข้าข้อมูลเบรกเกอร์, ตรวจหน้าจอด้วย Chrome headless
+scripts/             build สำหรับ deploy และสร้างข้อมูลตัวอย่าง
+sql/                 สคีมา Supabase และข้อมูลตัวอย่าง
+```
+
+หน้าเว็บไม่ใช้ framework และไม่โหลดอะไรจากโดเมนภายนอก (นโยบาย CSP จำกัดไว้ที่ `'self'`) ทุกอย่างอยู่ในโฟลเดอร์ `public/`
+
+## ตัวอย่างโครงการ แชร์ลิงก์ และสถิติ (Supabase)
+
+ส่วนนี้ปิดอยู่จนกว่าจะตั้งค่า ถ้าไม่ตั้งค่า ตัวอย่างโครงการ 4 แบบจะอ่านจากไฟล์ใน `public/presets/` แทน
+
+1. สร้างโปรเจกต์ Supabase แล้วรัน `sql/supabase-demo-schema.sql` ตามด้วย `sql/seed-demo-presets.sql` ใน SQL Editor (สร้างไฟล์ seed ใหม่ได้ด้วย `npm run seed:presets`)
+2. ตอน build ใส่ค่าผ่าน environment (ไม่ต้อง commit ลง repo)
+
    ```bash
    SUPABASE_URL=https://<ref>.supabase.co SUPABASE_ANON_KEY=<anon> DEMO_REDIRECT_URL=https://github.com/<you> npm run build:demo
    ```
-3. ความปลอดภัยอยู่ที่ฐานข้อมูล (anon key ทุกคนเห็นได้): RLS ทุกตาราง · anon อ่านได้เฉพาะ "ตัวอย่างทางการ" · โครงการที่แชร์อ่านได้ผ่าน RPC ด้วย UUID เท่านั้น · เขียนได้เฉพาะคอลัมน์ที่อนุญาต · จำกัดอัตราต่อ IP (แฮชเค็ม) · หมดอายุ 30 วัน · สถิติเก็บเฉพาะชนิดไฟล์ + desktop/mobile (ไม่เก็บ IP/ชื่อโครงการ/User-Agent)
+
+   ค่าที่ใช้ได้: `SUPABASE_URL`, `SUPABASE_ANON_KEY` (ใช้ anon/publishable เท่านั้น), `DEMO_REDIRECT_URL`, `DEMO_CONTACT_EMAIL`, `DEMO_OWNER_NAME`
+
+anon key ทุกคนเห็นได้ ความปลอดภัยจึงอยู่ที่ฐานข้อมูล: เปิด RLS ทุกตาราง ผู้ใช้ทั่วไปอ่านได้เฉพาะตัวอย่างทางการ โครงการที่แชร์เปิดได้ด้วย UUID เท่านั้น จำกัดจำนวนครั้งต่อ IP และหมดอายุใน 30 วัน สถิติเก็บแค่ชนิดไฟล์ที่กดกับประเภทอุปกรณ์ (เดสก์ท็อป/มือถือ) ไม่เก็บ IP ชื่อโครงการ หรือ User-Agent
+
+ขั้นตอนเปิดใช้งานแบบละเอียดอยู่ใน [`docs/PUBLIC-DEPLOY.md`](docs/PUBLIC-DEPLOY.md)
 
 ## Deploy
-- **GitHub Pages**: `.github/workflows/pages.yml` (ตั้ง Actions variables `SUPABASE_URL`, `DEMO_REDIRECT_URL`… และ secret `SUPABASE_ANON_KEY`) — Pages ไม่รองรับ `_headers` จึงใช้ `<meta>` CSP ใน `index.html`
-- **Netlify / Cloudflare Pages**: publish `dist-demo/` (ใช้ `_headers` → CSP เต็มรวม `frame-ancestors`)
 
-## โครงสร้างที่เพิ่มจากเวอร์ชันเต็ม
-`public/js/demo-config.js` (ค่าตั้ง) · `demo-guard.js` (ตัวดัก+ลายน้ำ+บล็อก Ctrl+P) · `supabase-client.js` · `demo-ui.js` (แถบตัวอย่าง/แชร์ลิงก์) · `sql/` · `presets/` · `scripts/` · `tests/demo-security.test.js`
+`npm run build:demo` สร้างโฟลเดอร์ `dist-demo/` ที่พร้อม deploy
 
-© 2026 Photsawat Suksombat — สงวนลิขสิทธิ์ ดูและทดลองใช้เพื่อประเมินเท่านั้น ห้ามใช้เชิงพาณิชย์/ดัดแปลง/เผยแพร่ต่อ — ดูเงื่อนไขใน [`LICENSE`](LICENSE) · ติดต่อผู้พัฒนา: https://www.linkedin.com/in/photsawat-suksombat
+- **GitHub Pages** ใช้ `.github/workflows/pages.yml` ตั้ง Actions variables `SUPABASE_URL`, `DEMO_REDIRECT_URL` ฯลฯ และ secret `SUPABASE_ANON_KEY` (Pages ไม่รองรับไฟล์ `_headers` จึงใช้ `<meta>` CSP ใน `index.html`)
+- **Netlify / Cloudflare Pages** publish โฟลเดอร์ `dist-demo/` ได้เลย ใช้ `_headers` ที่ให้ CSP ครบ
+
+## ทดสอบ
+
+`npm test` รัน `tests/run-all.js` (ทุกไฟล์ `*.test.js` ในโฟลเดอร์ `tests/`) ตามด้วย `test/master-spec.test.js` ที่ตรวจเกณฑ์หลักของตัวคำนวณ มีการตรวจหน้าจอจริงด้วย Chrome แยกต่างหาก: `node tools/ui-smoke.js`
+
+---
+
+© 2026 Photsawat Suksombat สงวนลิขสิทธิ์ ดูและทดลองใช้เพื่อประเมินเท่านั้น ห้ามใช้เชิงพาณิชย์ ดัดแปลง หรือเผยแพร่ต่อ ดูรายละเอียดใน [`LICENSE`](LICENSE) · ติดต่อผู้พัฒนา: https://www.linkedin.com/in/photsawat-suksombat
