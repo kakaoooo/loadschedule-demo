@@ -49,7 +49,7 @@
   }
 
   /* ---------- ตารางโหลดแผงย่อย: รูปแบบ Panel Board Schedule (ตามแบบ THE KOP ENGINEER) ---------- */
-  // แถวเรียงตามเลขวงจร 1,2,3,… ; เฟสของแต่ละช่องมาจาก engine (layout.slotPhase)
+  // seq: แถวเรียงตามเลขวงจร 1,2,3,… · pair: ครึ่งบนเลขคี่ ครึ่งล่างเลขคู่ ; เฟสของแต่ละช่องมาจาก engine (layout.slotPhase)
   // รูปแบบ seq = A-B-C-A-B-C ตามเลขวงจร, pair = AA-BB-CC (แถวละคู่ ซ้าย/ขวา)
   function panelRows(p) {
     const L = p.layout;
@@ -75,6 +75,12 @@
         }
         rows.push(row);
       }
+    }
+    // pair (ค่าเริ่มต้น): ครึ่งบน = เลขคี่ 1,3,5,… ครึ่งล่าง = เลขคู่ 2,4,6,… → เบรกเกอร์ 3 ขั้วอ่านต่อกันเป็น 1-3-5 เฟส A-B-C ลงมาทั้งสองครึ่ง
+    if (L.pattern === 'pair') {
+      const odd = rows.filter((r) => r.no % 2 === 1), even = rows.filter((r) => r.no % 2 === 0);
+      if (odd.length && even.length) even[0].half = true;
+      return odd.concat(even);
     }
     return rows;
   }
@@ -180,7 +186,7 @@
         ? `<td class="c-act"><button class="row-x" type="button" data-del-circuit="${esc(b.id)}|${r.no}" title="ลบวงจรที่ ${r.no}" aria-label="ลบวงจรที่ ${r.no}">×</button></td>` : '<td class="c-act"></td>';
       const drop = (edit && (r.kind === 'load' || r.kind === 'spare') && r.c.itemId && r.c.cIdx ? ` data-cbrow="${esc(b.id)}|${r.no}"` : '') + (edit && three ? ` data-phrow="${esc(b.id)}"` : '');
       const pinned = r.c && r.c.phForce != null && r.kind === 'load';
-      return `<tr class="${r.kind === 'space' ? 'space' : ''}${pinned ? ' ph-pinned' : ''}"${drop} data-ck="${esc(r.ck || 'space#' + r.no)}" data-no="${r.no}" data-ph="${three ? PH[r.ph] : ''}">${(() => { const pc = phCtl(b.id, r, edit && three); return pc ? `<td class="num ph-cell">${pc}<span class="no">${r.no}</span></td>` : `<td class="num"><span class="ph-dot ${three ? 'ph' + PH[r.ph] : ''}"></span>${r.no}</td>`; })()}${mid}${vaCells(r)}${act}</tr>`;
+      return `<tr class="${r.kind === 'space' ? 'space' : ''}${pinned ? ' ph-pinned' : ''}${r.half ? ' half-top' : ''}"${drop} data-ck="${esc(r.ck || 'space#' + r.no)}" data-no="${r.no}" data-ph="${three ? PH[r.ph] : ''}">${(() => { const pc = phCtl(b.id, r, edit && three); return pc ? `<td class="num ph-cell">${pc}<span class="no">${r.no}</span></td>` : `<td class="num"><span class="ph-dot ${three ? 'ph' + PH[r.ph] : ''}"></span>${r.no}</td>`; })()}${mid}${vaCells(r)}${act}</tr>`;
     }).join('');
 
     // ช่องสายป้อน (กรอบสีแดงเหมือนในแบบ)

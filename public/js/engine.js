@@ -7,8 +7,8 @@
  * ทุกขั้นเก็บ "steps" ไว้ให้หน้า "วิธีคำนวณ" แสดงเหตุผลการเลือก
  *
  * การจัดวงจรลงช่อง (meta.phasePattern):
- *   'seq'  (ค่าเริ่มต้น) เลขวงจร n (ช่อง i = n-1) อยู่เฟส i % 3  ->  A-B-C-A-B-C ตามเลขวงจร
- *   'pair' แบบเดิม เฟสของช่อง = floor(i / 2) % 3  ->  AA-BB-CC
+ *   'pair' (ค่าเริ่มต้น) เฟสของช่อง = floor(i / 2) % 3  ->  AA-BB-CC : วงจร 3 เฟสใช้ 1-3-5 / 2-4-6 ได้ A-B-C ลงมาทั้งสองคอลัมน์ ; ตารางโหลดแสดงครึ่งบน = เลขคี่ ครึ่งล่าง = เลขคู่
+ *   'seq'  เลขวงจร n (ช่อง i = n-1) อยู่เฟส i % 3  ->  A-B-C-A-B-C ตามเลขวงจร
  * วงจร 3 เฟสในแบบ seq (meta.threePole):
  *   'consecutive' (ค่าเริ่มต้น) ใช้ 3 เลขติดกัน เริ่มที่เลขหารด้วย 3 ลงตัว: 1-2-3, 4-5-6 ... เฟส A-B-C ทุกวงจร
  *   'column' ใช้ 3 ช่องคอลัมน์เดียวกัน (i, i+2, i+4): 1-3-5, 2-4-6, 7-9-11
@@ -277,7 +277,7 @@
       hv: { length: 20 },
       sourceKA: 0, serviceKA: 25, growth: 0, spareRatio: 0.15, activeRatio: 0.8,
       pfNow: 0.85, pfTarget: 0.95, maxParallelSize: 300, mccbICMin: 10,
-      phasePattern: 'seq',
+      phasePattern: 'pair',   // ค่าเริ่มต้น: 1-3-5 / 2-4-6 เฟส A-B-C ลงมา (AA-BB-CC) · 'seq' = เลขวงจรไล่ A-B-C ต่อเนื่อง
       threePole: 'consecutive'   // วงจร 3 เฟสแบบ seq: 'consecutive' = 3 เลขติดกัน (1-2-3, 4-5-6) · 'column' = 3 ช่องคอลัมน์เดียวกัน (1-3-5, 2-4-6)
     };
   }
@@ -684,7 +684,7 @@
     if (!threeP) return 0;
     return pattern === 'pair' ? Math.floor(i / 2) % 3 : i % 3;
   }
-  const patternOf = (meta) => (meta.phasePattern === 'pair' ? 'pair' : 'seq');
+  const patternOf = (meta) => (meta.phasePattern === 'seq' ? 'seq' : 'pair');
 
   /*
    * ตัวแบ่งเฟส: แบ่ง "วงจร 1 เฟส" เป็น 3 กลุ่ม (A/B/C) ให้โหลดต่างกันน้อยที่สุด (ลด max|โหลดเฟส − เฉลี่ย|)
@@ -1059,7 +1059,7 @@
       slots[i] = c; c.slotNos = [i + 1]; c.phase = slotPhase(i, 'pair', threeP);
     }
     for (const [c, ph] of pendingSpare) {
-      const i = firstFreeAfterUsed(slots, rows, ph, threeP);
+      const i = firstFreeAfterUsed(slots, rows, c.va > 0 ? ph : null, threeP);   // SPARE ที่ไม่มีโหลด: ต่อท้ายวงจรจริงของแต่ละคอลัมน์ติดกัน ไม่เว้นช่องตามเฟส (มี VA ต้องตามเฟสที่จัดไว้)
       if (i == null) return null;
       slots[i] = c; c.slotNos = [i + 1]; c.phase = slotPhase(i, 'pair', threeP);
     }
@@ -1069,7 +1069,7 @@
   // ช่องว่างแรกถัดจากวงจรที่ใช้งานแล้ว (pair: ให้ spare อยู่ต่อท้าย ไม่แทรกบนสุด)
   function firstFreeAfterUsed(slots, rows, ph, threeP) {
     let best = null;
-    for (const side of [1, 0]) {
+    for (const side of [0, 1]) {
       let last = -1;
       for (let r = 0; r < rows; r++) if (slots[r * 2 + side]) last = r;
       for (let r = last + 1; r < rows; r++) {
@@ -1121,11 +1121,10 @@
   // Spare อัตโนมัติ (pair): เฟสที่โหลดน้อยก่อน วางต่อท้ายวงจรที่ใช้แล้ว
   function autosPair(res, k, threeP, meta, ld) {
     let placed = 0;
-    const byLoad = [0, 1, 2].sort((a, b) => ld[a] - ld[b] || a - b);
     for (let n = 0; n < k; n++) {
       // เฟสที่เบาสุดก่อน (วนตามลำดับ) ถ้าเฟสนั้นไม่มีช่องว่างเหลือ ลองเฟสถัดไป
       let idx = null;
-      for (let t = 0; t < (threeP ? 3 : 1) && idx == null; t++) idx = firstFreeAfterUsed(res.slots, res.rows, threeP ? byLoad[(n + t) % 3] : null, threeP);
+      idx = firstFreeAfterUsed(res.slots, res.rows, null, threeP);   // ต่อท้ายวงจรจริงติดกัน (ไม่เลือกตามเฟส เพราะ SPARE ไม่มีโหลด)
       if (idx == null) break;
       const cbAt = side0(idx) ? meta.cbLight : meta.cbRec;
       res.slots[idx] = autoSpareObj(idx, slotPhase(idx, 'pair', threeP), cbAt, meta);
@@ -1525,7 +1524,7 @@
     }
     if (meta.supply !== 'transformer' && meta.supply !== 'lv') { if (warnings) warnings.push(`ระบบรับไฟ "${meta.supply}" ไม่รู้จัก — ใช้หม้อแปลง`); meta.supply = 'transformer'; }
     if (meta.utility !== 'PEA' && meta.utility !== 'MEA') { if (warnings) warnings.push(`การไฟฟ้า "${meta.utility}" ไม่รู้จัก — ใช้ กฟภ.`); meta.utility = 'PEA'; }
-    meta.phasePattern = meta.phasePattern === 'pair' ? 'pair' : 'seq';
+    meta.phasePattern = meta.phasePattern === 'seq' ? 'seq' : 'pair';
     meta.threePole = meta.threePole === 'column' ? 'column' : 'consecutive';
     return meta;
   }
@@ -2326,7 +2325,7 @@
     const sm = isObj(src.meta) ? src.meta : {};
     const meta = Object.assign({}, def, sm);
     ['branch', 'feeder', 'main', 'hv'].forEach((k) => { meta[k] = Object.assign({}, def[k], isObj(sm[k]) ? sm[k] : {}); });
-    if (meta.phasePattern !== 'seq' && meta.phasePattern !== 'pair') meta.phasePattern = 'seq';
+    if (meta.phasePattern !== 'seq' && meta.phasePattern !== 'pair') meta.phasePattern = 'pair';
     if (meta.threePole !== 'column') meta.threePole = 'consecutive';
 
     const used = new Set();

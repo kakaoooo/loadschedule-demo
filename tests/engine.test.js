@@ -388,7 +388,7 @@ test('ROB phases ผิดค่า (2, "3") ถูกจัดเป็น 1/3 
 /* =========================================================================================
  * normalizeProject
  * ======================================================================================= */
-test('normalizeProject: เติมค่าเริ่มต้นของ meta (รวม deep-merge branch/feeder/main/hv และ phasePattern=seq) ไม่แก้ข้อมูลเข้า', () => {
+test('normalizeProject: เติมค่าเริ่มต้นของ meta (รวม deep-merge branch/feeder/main/hv และ phasePattern=pair) ไม่แก้ข้อมูลเข้า', () => {
   const raw = { meta: { name: 'x', branch: { cable: 'CV' }, main: { length: 7 } }, panels: [{ id: 'MDB', name: 'MDB', kind: 'MDB', phases: 3 }], items: [] };
   const before = JSON.stringify(raw);
   const { project, notes } = E.normalizeProject(raw);
@@ -397,7 +397,7 @@ test('normalizeProject: เติมค่าเริ่มต้นของ m
   eq(project.meta.branch, { cable: 'CV', method: 'g2', conduit: 'EMT' });
   eq(project.meta.main.length, 7); eq(project.meta.main.cable, 'CV'); eq(project.meta.main.maxSize, 300);
   eq(project.meta.hv, { length: 20 });
-  eq(project.meta.phasePattern, 'seq');
+  eq(project.meta.phasePattern, 'pair');
   assert(Array.isArray(notes));
 });
 test('normalizeProject: ซ่อมแผง (id ซ้ำ/ไม่มี, parent ไม่มี/วน/ชี้ตัวเอง, ไม่มี MDB) และตัดรายการเสีย พร้อมหมายเหตุ', () => {

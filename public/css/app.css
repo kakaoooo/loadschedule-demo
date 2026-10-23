@@ -1094,3 +1094,5 @@ html[data-theme="dark"] .preview .num { color: #fff; }
 .br-spec { color: var(--ink-3); font-weight: 400; white-space: normal; }
 .br-pick { display: block; margin: 2px 0 6px; color: var(--ink-2); }
 .br-pick b { color: var(--blue); font-weight: 600; }
+/* ตารางโหลดแบบ pair: เส้นคั่นระหว่างครึ่งบน (เลขคี่) กับครึ่งล่าง (เลขคู่) */
+table.pbt tr.half-top td { border-top: 3px double #111; }

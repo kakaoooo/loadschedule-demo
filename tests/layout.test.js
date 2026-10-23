@@ -6,7 +6,7 @@ const { E, proj, P, I, gen, rng, clone } = require('./helpers/build');
 const cust = (va, extra) => I('LP1', Object.assign({ type: 'custom', va, phases: 1, continuous: false }, extra || {}));
 function runLP(items, o) {
   o = o || {};
-  const p = proj({ meta: o.meta, panels: [P('MDB', 'MDB', null), P('LP1', 'LP', 'MDB', o.panel || {})], items });
+  const p = proj({ meta: Object.assign({ phasePattern: 'seq' }, o.meta), panels: [P('MDB', 'MDB', null), P('LP1', 'LP', 'MDB', o.panel || {})], items });
   const r = E.calculate(p);
   return { r, po: r.panels.find((x) => x.id === 'LP1'), p };
 }
@@ -26,15 +26,15 @@ test('A1 slotPhase 1 เฟส = 0 ทุกช่อง / pattern แปลก 
   eq([0, 1, 2, 3, 4, 5].map((i) => E.slotPhase(i, 'pair', false)), [0, 0, 0, 0, 0, 0]);
   eq([0, 1, 2, 3].map((i) => E.slotPhase(i, 'xyz', true)), [0, 1, 2, 0]);
 });
-test('A1 defaultMeta().phasePattern = seq และโครงการที่ไม่มีคีย์นี้ก็เป็น seq', () => {
-  eq(E.defaultMeta().phasePattern, 'seq');
-  const { r, po } = runLP([cust(1000), cust(1000)], {});
-  delete r.meta.phasePattern;
+test('A1 defaultMeta().phasePattern = pair (1-3-5 / 2-4-6 เฟส A-B-C ลงมา) และโครงการที่ไม่มีคีย์นี้ก็เป็น pair', () => {
+  eq(E.defaultMeta().phasePattern, 'pair');
   const p2 = proj({ panels: [P('MDB', 'MDB', null), P('LP1', 'LP', 'MDB')], items: [cust(1000), cust(1000)] });
   delete p2.meta.phasePattern;
-  const po2 = E.calculate(p2).panels.find((x) => x.id === 'LP1');
-  eq(po2.layout.pattern, 'seq');
-  eq(po.layout.pattern, 'seq');
+  eq(E.calculate(p2).panels.find((x) => x.id === 'LP1').layout.pattern, 'pair');
+  p2.meta.phasePattern = 'seq';
+  eq(E.calculate(p2).panels.find((x) => x.id === 'LP1').layout.pattern, 'seq');
+  p2.meta.phasePattern = 'xyz';
+  eq(E.calculate(p2).panels.find((x) => x.id === 'LP1').layout.pattern, 'pair');   // ค่าแปลก = ค่าเริ่มต้น
 });
 
 /* ---------------------------------------------------------------- A3: วงจร 1 เฟสเรียงเลข A-B-C */

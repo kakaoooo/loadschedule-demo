@@ -160,7 +160,7 @@ function check(seed, project, level) {
   }
 
   // การจัดวงจรลงช่อง
-  const pattern = meta.phasePattern === 'pair' ? 'pair' : 'seq';
+  const pattern = meta.phasePattern === 'seq' ? 'seq' : 'pair';
   for (const p of panels) {
     if (!p.isLP || !reachable.has(p.id)) continue;
     const L = p.layout;

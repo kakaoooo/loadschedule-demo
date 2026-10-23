@@ -1,9 +1,11 @@
-// กฎการวางช่องของตารางโหลด (แผง 3 เฟส แบบ seq): R0 3P = 3 เลขติดกัน (consecutive, ค่าเริ่มต้น) หรือคอลัมน์เดียวกัน (column) · R1 โหลดจริงมาก่อน · R2 SPARE อยู่ท้าย/ช่องแทรกใช้เลขสูงสุดก่อน
+// กฎการวางช่องของตารางโหลด — ส่วนแรกแบบ seq (ระบุ phasePattern: 'seq' ชัดเจน) · ส่วน PR* คือค่าเริ่มต้นใหม่ pair (1-3-5 / 2-4-6 เฟส A-B-C): R0 3P = 3 เลขติดกัน (consecutive, ค่าเริ่มต้น) หรือคอลัมน์เดียวกัน (column) · R1 โหลดจริงมาก่อน · R2 SPARE อยู่ท้าย/ช่องแทรกใช้เลขสูงสุดก่อน
 // รัน: node tests/layout-rules.test.js
+const fs = require('fs');
+const path = require('path');
 const { test, assert, eq, done } = require('./helpers/eng-harness.js');
 const E = require('../public/js/engine.js');
 
-const proj = (items, extra, meta) => ({ version: 1, meta: Object.assign(E.defaultMeta(), meta || {}), panels: [{ id: 'MDB', name: 'MDB', kind: 'MDB', phases: 3, parent: null }, Object.assign({ id: 'LP', name: 'LP', kind: 'LP', phases: 3, parent: 'MDB', feederLength: 20 }, extra || {})], items: items.map((it, i) => Object.assign({ id: 'i' + i, panelId: 'LP', length: 20 }, it)) });
+const proj = (items, extra, meta) => ({ version: 1, meta: Object.assign(E.defaultMeta(), { phasePattern: 'seq' }, meta || {}), panels: [{ id: 'MDB', name: 'MDB', kind: 'MDB', phases: 3, parent: null }, Object.assign({ id: 'LP', name: 'LP', kind: 'LP', phases: 3, parent: 'MDB', feederLength: 20 }, extra || {})], items: items.map((it, i) => Object.assign({ id: 'i' + i, panelId: 'LP', length: 20 }, it)) });
 const slotsOf = (p) => E.calculate(p).panels.find((x) => x.id === 'LP').layout.slots;
 const kind = (s) => (!s ? 'SPACE' : s.ref ? 'cont' : (s.cat === 'spare' || s.auto) ? 'SPARE' : 'live');
 
@@ -67,6 +69,68 @@ for (const [label, meta] of [['consecutive', {}], ['column', COL]]) test('LR5 ('
     checked++;
   }
   assert(checked > 100, 'ตรวจได้น้อยเกินไป: ' + checked);
+  return 'ตรวจ ' + checked + ' โครงการ';
+});
+
+/* ---------- ค่าเริ่มต้น pair: 1-3-5 / 2-4-6 ครึ่งบนคี่ ครึ่งล่างคู่ เฟส A-B-C ---------- */
+const projP = (items, extra) => ({ version: 1, meta: E.defaultMeta(), panels: [{ id: 'MDB', name: 'MDB', kind: 'MDB', phases: 3, parent: null }, Object.assign({ id: 'LP', name: 'LP', kind: 'LP', phases: 3, parent: 'MDB', feederLength: 20 }, extra || {})], items: items.map((it, i) => Object.assign({ id: 'i' + i, panelId: 'LP', length: 20 }, it)) });
+const calcP = (p) => E.calculate(p).panels.find((x) => x.id === 'LP');
+const PH = 'ABC';
+
+test('PR1 ค่าเริ่มต้นของโครงการใหม่ = pair และโครงการที่ไม่ระบุก็เป็น pair', () => {
+  eq(E.defaultMeta().phasePattern, 'pair');
+  const p = projP([{ type: 'lift', preset: 20, qty: 1 }]); delete p.meta.phasePattern;
+  eq(calcP(p).layout.pattern, 'pair');
+});
+
+test('PR2 ลิฟต์ 3 ตัว: 1-3-5 / 2-4-6 / 8-10-12 (ตัวที่ 3 เริ่มแถวที่ 4 ฝั่งคู่) และแต่ละตัวเฟส A-B-C เรียงลงมา', () => {
+  const po = calcP(projP([{ type: 'lift', preset: 20, qty: 3 }], { ways: 12 }));
+  const c3 = po.circuits.filter((c) => c.phases === 3).map((c) => c.slotNos).sort((a, b) => a[0] - b[0]);
+  eq(c3, [[1, 3, 5], [2, 4, 6], [8, 10, 12]]);
+  c3.forEach((n) => eq(n.map((x) => PH[po.layout.slotPhase[x - 1]]).join(''), 'ABC', 'เฟสของ ' + n));
+});
+
+test('PR3 ทุกวงจร 3 เฟส (สุ่ม 150 โครงการ): คอลัมน์เดียวกัน ห่างกัน 2 และเฟสเรียง A,B,C ตามลำดับช่อง', () => {
+  let seed = 7771; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  let n3 = 0;
+  for (let n = 0; n < 150; n++) {
+    const items = [{ type: 'lift', preset: 20, qty: 1 + Math.floor(rnd() * 4) }, { type: 'motor', kw: 7.5, phases: 3, qty: Math.floor(rnd() * 3) }, { type: 'light', fixtures: 3 + Math.floor(rnd() * 20), perFixture: 2, lamp: 'led-t8-18', qty: 1 + Math.floor(rnd() * 3) }, { type: 'rec', points: 2 + Math.floor(rnd() * 12), qty: 1 + Math.floor(rnd() * 3) }].filter((i) => i.qty > 0);
+    let po; try { po = calcP(projP(items, rnd() < 0.5 ? { ways: [12, 18, 24][Math.floor(rnd() * 3)] } : {})); } catch (e) { continue; }
+    if (!po.layout.slots.length) continue;
+    po.circuits.filter((c) => c.phases === 3).forEach((c) => {
+      const s = c.slotNos; n3++;
+      assert(s[1] - s[0] === 2 && s[2] - s[1] === 2, 'ช่อง ' + s);
+      eq(s.map((x) => PH[po.layout.slotPhase[x - 1]]).join(''), 'ABC', 'โครงการ ' + n + ' ช่อง ' + s);
+    });
+  }
+  assert(n3 > 50, 'วงจร 3 เฟสน้อยเกินไป: ' + n3);
+  return n3 + ' วงจร';
+});
+
+test('PR4 ตารางโหลดบนหน้าจอ: ครึ่งบนเป็นเลขคี่ (1,3,5,…) ครึ่งล่างเป็นเลขคู่ (2,4,6,…) ในโค้ดแสดงผล', () => {
+  const x = fs.readFileSync(path.join(__dirname, '..', 'public/js/export.js'), 'utf8');
+  assert(x.includes("L.pattern === 'pair'") && x.includes('r.no % 2 === 1') && x.includes('odd.concat(even)'), 'ขาดการเรียงครึ่งบน/ล่าง');
+  assert(x.includes('half-top'), 'เส้นคั่นครึ่ง');
+});
+
+test('PR5 pair: SPARE ต่อท้ายโหลดจริงของแต่ละคอลัมน์ติดกัน (ไม่มี SPACE คั่นระหว่างโหลดจริงกับ SPARE) สุ่ม 150 โครงการ', () => {
+  let seed = 99; const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+  let checked = 0;
+  for (let n = 0; n < 150; n++) {
+    const items = [{ type: 'light', fixtures: 3 + Math.floor(rnd() * 25), perFixture: 2, lamp: 'led-t8-18', qty: 1 + Math.floor(rnd() * 3) }, { type: 'rec', points: 2 + Math.floor(rnd() * 12), qty: 1 + Math.floor(rnd() * 4) }, { type: 'lift', preset: 20, qty: Math.floor(rnd() * 3) }].filter((i) => i.qty > 0);
+    let po; try { po = calcP(projP(items, rnd() < 0.5 ? { ways: [18, 24, 30][Math.floor(rnd() * 3)] } : {})); } catch (e) { continue; }
+    const sl = po.layout.slots; if (!sl.length) continue;
+    [0, 1].forEach((side) => {
+      const col = sl.filter((_, i) => i % 2 === side).map(kind);
+      const lastLive = Math.max(col.lastIndexOf('live'), col.lastIndexOf('cont'));
+      const firstSpare = col.indexOf('SPARE');
+      if (firstSpare >= 0 && lastLive >= 0 && firstSpare > lastLive) assert(firstSpare === lastLive + 1, `คอลัมน์ ${side ? 'คู่' : 'คี่'} โครงการ ${n}: ${col.join('')}`);
+      // หลัง SPARE ตัวแรกต้องเป็น SPARE ต่อกันก่อนถึง SPACE
+      if (firstSpare >= 0) { const after = col.slice(firstSpare); const gap = after.indexOf('SPACE'); if (gap >= 0) assert(!after.slice(gap).includes('SPARE'), `มี SPACE คั่น SPARE คอลัมน์ ${side ? 'คู่' : 'คี่'} โครงการ ${n}: ${col.join('')}`); }
+    });
+    checked++;
+  }
+  assert(checked > 80, 'ตรวจน้อยเกินไป ' + checked);
   return 'ตรวจ ' + checked + ' โครงการ';
 });
 done();
