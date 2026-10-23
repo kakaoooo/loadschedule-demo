@@ -45,7 +45,7 @@
   const ENUM = {
     buildingType: (v, d) => en(v, BUILDING, d), utility: (v, d) => en(v, ['PEA', 'MEA'], d), supply: (v, d) => en(v, ['transformer', 'lv'], d),
     licenseTier: (v, d) => en(v, LICENSE_TIERS, d), logo: (v) => safeLogo(v),
-    hvKV: (v, d) => enNum(v, [12, 22, 24, 33], d), phasePattern: (v, d) => en(v, ['seq', 'pair'], d),
+    hvKV: (v, d) => enNum(v, [12, 22, 24, 33], d), phasePattern: (v, d) => en(v, ['seq', 'pair'], d), threePole: (v, d) => en(v, ['consecutive', 'column'], d),
     'main.maxSize': (v, d) => enNum(v, [185, 240, 300, 400], d), maxParallelSize: (v, d) => enNum(v, [185, 240, 300], d)
   };
   ['branch', 'feeder', 'main'].forEach((k) => {

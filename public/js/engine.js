@@ -9,6 +9,9 @@
  * การจัดวงจรลงช่อง (meta.phasePattern):
  *   'seq'  (ค่าเริ่มต้น) เลขวงจร n (ช่อง i = n-1) อยู่เฟส i % 3  ->  A-B-C-A-B-C ตามเลขวงจร
  *   'pair' แบบเดิม เฟสของช่อง = floor(i / 2) % 3  ->  AA-BB-CC
+ * วงจร 3 เฟสในแบบ seq (meta.threePole):
+ *   'consecutive' (ค่าเริ่มต้น) ใช้ 3 เลขติดกัน เริ่มที่เลขหารด้วย 3 ลงตัว: 1-2-3, 4-5-6 ... เฟส A-B-C ทุกวงจร
+ *   'column' ใช้ 3 ช่องคอลัมน์เดียวกัน (i, i+2, i+4): 1-3-5, 2-4-6, 7-9-11
  */
 (function (root) {
   'use strict';
@@ -274,7 +277,8 @@
       hv: { length: 20 },
       sourceKA: 0, serviceKA: 25, growth: 0, spareRatio: 0.15, activeRatio: 0.8,
       pfNow: 0.85, pfTarget: 0.95, maxParallelSize: 300, mccbICMin: 10,
-      phasePattern: 'seq'
+      phasePattern: 'seq',
+      threePole: 'consecutive'   // วงจร 3 เฟสแบบ seq: 'consecutive' = 3 เลขติดกัน (1-2-3, 4-5-6) · 'column' = 3 ช่องคอลัมน์เดียวกัน (1-3-5, 2-4-6)
     };
   }
 
@@ -906,7 +910,7 @@
     return { auto: true, cat: 'spare', phases: 1, va: 0, desc: 'SPARE', slotNos: [i + 1], phase, cb, warn: [] };
   }
 
-  // วางแบบ seq: 3P (ช่อง i, i+2, i+4) ก่อน -> 1P ตามหมวดลงช่องว่างต่ำสุดต่อเนื่อง (เฟสตามเลขช่อง) -> Spare ท้ายสุด
+  // วางแบบ seq: 3P ก่อน (ตาม meta.threePole) -> 1P ตามหมวดลงช่องว่างต่ำสุดต่อเนื่อง (เฟสตามเลขช่อง) -> Spare ท้ายสุด
   function placeSeq(circuits, w, threeP, meta, panel, opt, reserveSp3) {
     const slots = new Array(w).fill(null);
     const live3 = sortCircuits(circuits.filter((c) => c.phases === 3 && c.cat !== 'spare'));
@@ -914,7 +918,20 @@
     const live1 = sortCircuits(circuits.filter((c) => c.phases !== 3 && c.cat !== 'spare'));
     const sp1 = sortCircuits(circuits.filter((c) => c.phases !== 3 && c.cat === 'spare'));
     if ((live3.length || sp3.length) && !threeP) return null;
+    // consecutive: 3P ใช้ 3 เลขติดกัน เริ่มที่ช่องซึ่งหารด้วย 3 ลงตัว (1-2-3, 4-5-6, ...) → เฟส A-B-C ในแต่ละวงจร
+    // column: 3P ใช้ช่อง i, i+2, i+4 (คอลัมน์เดียวกัน ตามตำแหน่งบัสของแผง 2 คอลัมน์)
+    const consec = meta.threePole !== 'column';
     const put3 = (c, from) => {
+      if (consec) {
+        for (let i = Math.ceil(Math.max(0, from) / 3) * 3; i + 2 < w; i += 3) {
+          if (!slots[i] && !slots[i + 1] && !slots[i + 2]) {
+            slots[i] = c; slots[i + 1] = { ref: c }; slots[i + 2] = { ref: c };
+            c.slotNos = [i + 1, i + 2, i + 3]; c.phase = null;
+            return true;
+          }
+        }
+        return false;
+      }
       for (let i = Math.max(0, from); i + 4 < w; i++) {
         if (!slots[i] && !slots[i + 2] && !slots[i + 4]) {
           slots[i] = c; slots[i + 2] = { ref: c }; slots[i + 4] = { ref: c };
@@ -930,8 +947,14 @@
     if (reserveSp3) { // แผงแน่น: จอง Spare 3 เฟสไว้ท้ายแผงก่อน (วงจร 1 เฟสเติมช่องที่เหลือ)
       for (const c of sp3) {
         let ok = false;
-        for (let i = w - 5; i >= 0 && !ok; i--) {
-          if (!slots[i] && !slots[i + 2] && !slots[i + 4]) { slots[i] = c; slots[i + 2] = { ref: c }; slots[i + 4] = { ref: c }; c.slotNos = [i + 1, i + 3, i + 5]; c.phase = null; ok = true; }
+        if (consec) {
+          for (let i = Math.floor((w - 3) / 3) * 3; i >= 0 && !ok; i -= 3) {
+            if (!slots[i] && !slots[i + 1] && !slots[i + 2]) { slots[i] = c; slots[i + 1] = { ref: c }; slots[i + 2] = { ref: c }; c.slotNos = [i + 1, i + 2, i + 3]; c.phase = null; ok = true; }
+          }
+        } else {
+          for (let i = w - 5; i >= 0 && !ok; i--) {
+            if (!slots[i] && !slots[i + 2] && !slots[i + 4]) { slots[i] = c; slots[i + 2] = { ref: c }; slots[i + 4] = { ref: c }; c.slotNos = [i + 1, i + 3, i + 5]; c.phase = null; ok = true; }
+          }
         }
         if (!ok) return null;
       }
@@ -944,7 +967,7 @@
     const afterLive = Math.max(maxLive3, k1 ? liveSlots[k1 - 1] : -1);
     const rest = free.slice(k1);
     // Spare จาก item: ต่อท้ายวงจรใช้งาน (ช่องว่างแทรกกลาง 3P ใช้ทีหลังสุด)
-    const spSlots = rest.filter((i) => i > afterLive).concat(rest.filter((i) => i < afterLive)).slice(0, k2).sort((a, b) => a - b);
+    const spSlots = rest.filter((i) => i > afterLive).concat(rest.filter((i) => i < afterLive).reverse()).slice(0, k2).sort((a, b) => a - b);   // ช่องแทรกกลางใช้เลขสูงสุดก่อน (กฎ R2)
     const phOf = (i) => slotPhase(i, 'seq', threeP);
     const cardOf = (arr) => { const a = [0, 0, 0]; arr.forEach((i) => a[phOf(i)]++); return a; };
     const base = (opt.base || [0, 0, 0]).slice();
@@ -1065,6 +1088,13 @@
     return ld;
   };
 
+  /*
+   * กฎการวางช่อง (แผงแบบ seq — LAYOUT RULES) ใช้ทั้งโหลดจริงและ SPARE ; มีเทสต์ tests/layout-rules.test.js และสรุปใน docs/LAYOUT-RULES.md
+   *  R0 ตำแหน่ง 3 เฟสคงที่ตามบัส: วงจร 3P ใช้ช่อง i, i+2, i+4 (คอลัมน์เดียวกัน) เสมอ ไม่ย้ายเพื่อให้เลขสวย
+   *  R1 โหลดจริงมาก่อน: 3P ลงเลขต่ำสุดก่อน แล้ว 1P ตามหมวด ใช้ช่องว่างเลขต่ำสุดต่อเนื่อง (เฟสไล่ A-B-C ตามเลขช่อง)
+   *  R2 SPARE อยู่ท้าย: วางต่อท้ายวงจรจริงก่อน ; ถ้าท้ายแผงไม่เหลือที่ ให้ใช้ช่องว่างที่แทรกอยู่ใน "เลขสูงสุดก่อน"
+   *     ช่องที่เหลือเลขต่ำเป็น SPACE (ไม่ใช้) ไม่ใช่ SPARE — SPARE จึงไม่มาคั่นกลางระหว่างโหลดจริง
+   */
   // Spare อัตโนมัติ (seq): เติมช่องว่างของ "สามชุดสุดท้ายที่ไม่เต็ม" (เฟสเบาสุดก่อน) แล้วต่อด้วยเลขถัดไปตามลำดับ A-B-C
   function autosSeq(res, k, threeP, cbAt, meta, ld) {
     const slots = res.slots, w = slots.length;
@@ -1085,7 +1115,7 @@
     let liveTop = -1;
     slots.forEach((sl, i) => { const o = sl && (sl.ref || sl); if (o && o.cat !== 'spare' && !o.auto) liveTop = i; });
     for (let i = liveTop + 1; i < w && remaining > 0; i++) if (!slots[i]) put(i);
-    for (let i = 0; i <= liveTop && remaining > 0; i++) if (!slots[i]) put(i);
+    for (let i = liveTop; i >= 0 && remaining > 0; i--) if (!slots[i]) put(i);   // กฎ R2: ช่องแทรกกลางใช้เลขสูงสุดก่อน เหลือช่องเลขต่ำเป็น SPACE
     return placed;
   }
   // Spare อัตโนมัติ (pair): เฟสที่โหลดน้อยก่อน วางต่อท้ายวงจรที่ใช้แล้ว
@@ -1496,6 +1526,7 @@
     if (meta.supply !== 'transformer' && meta.supply !== 'lv') { if (warnings) warnings.push(`ระบบรับไฟ "${meta.supply}" ไม่รู้จัก — ใช้หม้อแปลง`); meta.supply = 'transformer'; }
     if (meta.utility !== 'PEA' && meta.utility !== 'MEA') { if (warnings) warnings.push(`การไฟฟ้า "${meta.utility}" ไม่รู้จัก — ใช้ กฟภ.`); meta.utility = 'PEA'; }
     meta.phasePattern = meta.phasePattern === 'pair' ? 'pair' : 'seq';
+    meta.threePole = meta.threePole === 'column' ? 'column' : 'consecutive';
     return meta;
   }
 
@@ -2296,6 +2327,7 @@
     const meta = Object.assign({}, def, sm);
     ['branch', 'feeder', 'main', 'hv'].forEach((k) => { meta[k] = Object.assign({}, def[k], isObj(sm[k]) ? sm[k] : {}); });
     if (meta.phasePattern !== 'seq' && meta.phasePattern !== 'pair') meta.phasePattern = 'seq';
+    if (meta.threePole !== 'column') meta.threePole = 'consecutive';
 
     const used = new Set();
     const uniq = (id, fallback) => { let base = isBlank(id) ? fallback : String(id), u = base, k = 2; while (used.has(u)) u = `${base}_${k++}`; used.add(u); return u; };

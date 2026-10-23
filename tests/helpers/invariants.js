@@ -179,7 +179,9 @@ function check(seed, project, level) {
       if (!c.slotNos) { hold('LAYOUT_PLACED', false, seed, `${p.id} ${c.cat}`); return; }
       hold('LAYOUT_PLACED', true, seed, '');
       if (c.phases === 3) {
-        hold('LAYOUT_3P_STRIDE2_SAME_SIDE', c.slotNos.length === 3 && c.slotNos[1] - c.slotNos[0] === 2 && c.slotNos[2] - c.slotNos[1] === 2, seed, () => `${p.id}: ${c.slotNos}`);
+        // seq + threePole 'consecutive' (ค่าเริ่มต้น) = 3 เลขติดกัน เริ่มที่เลขหารด้วย 3 ลงตัว (1-2-3, 4-5-6) ; อย่างอื่น (column / pair) = ช่องคอลัมน์เดียวกันห่างกัน 2
+        if (pattern === 'seq' && meta.threePole !== 'column') hold('LAYOUT_3P_CONSECUTIVE_ABC', c.slotNos.length === 3 && c.slotNos[1] - c.slotNos[0] === 1 && c.slotNos[2] - c.slotNos[1] === 1 && (c.slotNos[0] - 1) % 3 === 0, seed, () => `${p.id}: ${c.slotNos}`);
+        else hold('LAYOUT_3P_STRIDE2_SAME_SIDE', c.slotNos.length === 3 && c.slotNos[1] - c.slotNos[0] === 2 && c.slotNos[2] - c.slotNos[1] === 2, seed, () => `${p.id}: ${c.slotNos}`);
         if (c.slotNos.length === 3) hold('LAYOUT_3P_DISTINCT_PHASES', [0, 1, 2].every((ph) => c.slotNos.some((n) => L.slotPhase[n - 1] === ph)), seed, () => `${p.id}: ${c.slotNos}`);
         if (pattern === 'pair' && c.slotNos.length === 3) hold('LAYOUT_3P_PAIR_ROWS_ALIGNED', Math.floor((c.slotNos[0] - 1) / 2) % 3 === 0, seed, () => `${p.id}: ${c.slotNos}`);
       } else {

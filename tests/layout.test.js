@@ -102,20 +102,29 @@ test('A3 seq: แผง 1 เฟส เรียงเลขต่อกัน �
 });
 
 /* ---------------------------------------------------------------- A2: วงจร 3 เฟส */
-test('A2 seq: 3P วางก่อนบนช่องฝั่งเดียวกันห่างกัน 2 (1-3-5) และ 1P เติมช่องที่เหลือต่อเนื่อง', () => {
+test('A2 seq (threePole consecutive, ค่าเริ่มต้น): 3P = 1-2-3 / 4-5-6 / 7-8-9 เฟส A-B-C ทุกวงจร และ 1P เติมต่อจากนั้น', () => {
+  const m = (kw) => I('LP1', { type: 'motor', kw, phases: 3 });
+  const first = (po) => po.circuits.filter((c) => c.phases === 3).map((c) => c.slotNos).sort((a, b) => a[0] - b[0]);
+  const { po } = runLP([m(5.5), m(7.5), m(11)].concat([1, 2, 3, 4].map(() => cust(1000))));
+  eq(first(po), [[1, 2, 3], [4, 5, 6], [7, 8, 9]]);
+  po.circuits.filter((c) => c.phases === 3).forEach((c) => eq(c.slotNos.map((n) => po.layout.slotPhase[n - 1]), [0, 1, 2]));
+  eq(po.circuits.filter((c) => c.phases !== 3 && c.cat !== 'spare').map((c) => c.slotNos[0]).sort((a, b) => a - b), [10, 11, 12, 13]);
+});
+test('A2 seq (threePole column): 3P วางก่อนบนช่องฝั่งเดียวกันห่างกัน 2 (1-3-5) และ 1P เติมช่องที่เหลือต่อเนื่อง', () => {
   const items = [I('LP1', { type: 'motor', kw: 5.5, phases: 3 })].concat([1, 2, 3, 4].map(() => cust(1000)));
-  const { po } = runLP(items);
+  const { po } = runLP(items, { meta: { threePole: 'column' } });
   const m = po.circuits.find((c) => c.phases === 3);
   eq(m.slotNos, [1, 3, 5]);
   eq(m.slotNos.map((n) => po.layout.slotPhase[n - 1]).sort(), [0, 1, 2]);
   eq(po.circuits.filter((c) => c.phases !== 3).map((c) => c.slotNos[0]).sort((a, b) => a - b), [2, 4, 6, 7]);
 });
-test('A2 seq: 3P สองวงจร = 1-3-5 และ 2-4-6; สามวงจร = ... และ 7-9-11', () => {
+test('A2 seq (threePole column): 3P สองวงจร = 1-3-5 และ 2-4-6; สามวงจร = ... และ 7-9-11', () => {
   const m = (kw) => I('LP1', { type: 'motor', kw, phases: 3 });
   // วงจรที่ VA มากกว่าได้ช่องก่อน (เรียงตามหมวดแล้ว VA มากไปน้อย)
   const first = (po) => po.circuits.map((c) => c.slotNos).sort((a, b) => a[0] - b[0]);
-  eq(first(runLP([m(5.5), m(7.5)]).po), [[1, 3, 5], [2, 4, 6]]);
-  const three = runLP([m(5.5), m(7.5), m(11)]).po;
+  const col = { meta: { threePole: 'column' } };
+  eq(first(runLP([m(5.5), m(7.5)], col).po), [[1, 3, 5], [2, 4, 6]]);
+  const three = runLP([m(5.5), m(7.5), m(11)], col).po;
   eq(first(three), [[1, 3, 5], [2, 4, 6], [7, 9, 11]]);
   eq(three.circuits.find((c) => c.motor.kw === 11).slotNos, [1, 3, 5]);
 });
@@ -336,7 +345,7 @@ test('A6 ผลรวม phaseVA = connected (ทุกแผงใน seq แ�
     }
   }
 });
-test('A6 วงจร 3 เฟส: ช่องฝั่งเดียวกัน ห่างกัน 2 และครบ 3 เฟสที่ต่างกัน (seq และ pair; pair เริ่มที่แถวชุดละ 3)', () => {
+test('A6 วงจร 3 เฟส: seq = 3 เลขติดกัน (1-2-3) · pair = ช่องฝั่งเดียวกันห่างกัน 2 และครบ 3 เฟสที่ต่างกัน (seq และ pair; pair เริ่มที่แถวชุดละ 3)', () => {
   let n3 = 0;
   for (const pat of ['seq', 'pair']) for (const p of seqProjects) {
     const q = clone(p); q.meta.phasePattern = pat;
@@ -344,8 +353,12 @@ test('A6 วงจร 3 เฟส: ช่องฝั่งเดียวกั
       for (const c of po.circuits.filter((x) => x.phases === 3)) {
         n3++;
         const i = c.slotNos.map((n) => n - 1);
-        assert(i[1] === i[0] + 2 && i[2] === i[0] + 4, `${po.id}: ${c.slotNos}`);
-        assert(i[0] % 2 === i[1] % 2 && i[1] % 2 === i[2] % 2, 'same side');
+        if (pat === 'seq' && q.meta.threePole !== 'column') {
+          assert(i[1] === i[0] + 1 && i[2] === i[0] + 2 && i[0] % 3 === 0, `${po.id}: ${c.slotNos}`);
+        } else {
+          assert(i[1] === i[0] + 2 && i[2] === i[0] + 4, `${po.id}: ${c.slotNos}`);
+          assert(i[0] % 2 === i[1] % 2 && i[1] % 2 === i[2] % 2, 'same side');
+        }
         eq(i.map((x) => po.layout.slotPhase[x]).sort(), [0, 1, 2], `${pat} ${po.id} ${c.slotNos}`);
         if (pat === 'pair') assert(Math.floor(i[0] / 2) % 3 === 0, 'pair row-aligned');
         assert(po.layout.slots[i[0]] === c && po.layout.slots[i[1]].ref === c && po.layout.slots[i[2]].ref === c, 'slot objects');
