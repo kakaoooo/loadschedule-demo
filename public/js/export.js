@@ -95,7 +95,8 @@
   // เบรกเกอร์ตามยี่ห้อ: ชื่อรุ่นใต้ชนิด CB ; data-brcb = ช่องที่ชี้เมาส์ดูข้อมูลรุ่น/คลิกเลือกรุ่น (brandui.js) — c|แผง|อุปกรณ์|ลำดับวงจร, f|แผงที่รับไฟ, main
   const brKey = (pid, c) => (c && c.itemId && c.cIdx ? `c|${pid}|${c.itemId}|${c.cIdx}` : '');
   const brAttr = (key) => (key ? ` data-brcb="${esc(key)}" tabindex="0"` : '');
-  const brModel = (cb) => (cb && cb.bm ? `<div class="br-mdl">${esc(cb.bm.brandShort + ' ' + cb.bm.model)}</div>` : '');
+  const brSpec = (cb) => (root.LS_BRANDCB && root.LS_BRANDCB.specOf ? root.LS_BRANDCB.specOf(cb) : '');
+  const brModel = (cb) => (cb && cb.bm ? `<div class="br-mdl">${esc(cb.bm.brandShort + ' ' + cb.bm.model)}${brSpec(cb) ? ` <span class="br-spec">(${esc(brSpec(cb))})</span>` : ''}</div>` : '');
   // ป้าย CB แบบ Generic (ตัดยี่ห้อ/รุ่นออก: "Schneider EZC100F 32AT/100AF" → "32AT/100AF") — โหมดรายงานต้องไม่ล็อกสเปก
   const genCB = (cb) => (cb && cb.label ? String(cb.label).replace(/^.*?(\d+(?:AT\/\d+AF|A)\b.*)$/, '$1') : '');
 
@@ -132,7 +133,7 @@
     const mainCB = f ? f.cb : svc.mainCB;
     const ic = mainCB && mainCB.ic;
     const cats = catTotals(p);
-    const displayCB = (cb) => (edit ? cb.label : genCB(cb));
+    const displayCB = (cb) => (edit ? (root.LS_BRANDCB && root.LS_BRANDCB.labelSpec && cb.bm ? root.LS_BRANDCB.labelSpec(cb) : cb.label) : genCB(cb));
     // Ik" > IC (ความปลอดภัยต่อชีวิต): เซลล์ IC ของ CB ที่พิกัดตัดกระแสต่ำกว่ากระแสลัดวงจรที่บัสแผงนี้ → สีแดง + ⚠️
     const ikP = Number(p.sc && p.sc.Ik) || 0;
     // คำแนะนำในตารางโหลดเป็นสเปกกลาง (ไม่ระบุยี่ห้อ) : IC มาตรฐานถัดไป + Cascading/Back-up ตาม IEC 60947-2

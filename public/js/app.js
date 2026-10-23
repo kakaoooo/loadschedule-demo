@@ -10,6 +10,8 @@
   const TOKEN = (document.querySelector('meta[name="ls-token"]') || {}).content || '';
   // เวอร์ชันสาธิต (DemoGuard.isDemo()): ไม่มีการส่งออกไฟล์/พิมพ์ และไม่คุยกับ server.js (ใช้ localStorage + Supabase เท่านั้น)
   const DEMO = () => !!(window.DemoGuard && window.DemoGuard.isDemo && window.DemoGuard.isDemo());
+  // ป้าย CB บนหน้าจอ: ถ้าเลือกยี่ห้อ ต่อท้ายรุ่นด้วยสเปกในวงเล็บ (รายงาน/ตาราง generic ไม่ใช้)
+  const cbShow = (cb) => (cb && cb.bm && window.LS_BRANDCB && window.LS_BRANDCB.labelSpec ? window.LS_BRANDCB.labelSpec(cb) : (cb ? cb.label : ''));
   const demoBlock = (fmtName) => { if (!DEMO()) return false; window.DemoGuard.interceptExport(fmtName, typeof project !== 'undefined' && project && project.meta ? project.meta.name : ''); return true; };
   const api = (url, opts = {}) => fetch(url, Object.assign({}, opts, { headers: Object.assign({ 'x-ls-token': TOKEN }, opts.headers || {}) }));
 
@@ -767,7 +769,7 @@
     const pv = p.phaseVA, three = b.phases !== 1;
     const warnN = result.warnings.filter((w) => w.startsWith(b.name + ':') || w.startsWith(b.name + ' ·')).length;
     const par = boardOf(b.parent);
-    const mainTxt = f ? `${f.cb.label} · IC ${f.cb.ic} kA` : `${s.mainCB.label} · IC ${s.mainCB.ic} kA`;
+    const mainTxt = f ? `${cbShow(f.cb)} · IC ${f.cb.ic} kA` : `${cbShow(s.mainCB)} · IC ${s.mainCB.ic} kA`;
     return `<div class="pcard ${b.id === selected ? 'sel' : ''}" data-pid="${esc(b.id)}">
       <div class="pc-h"><b>${esc(b.name)}</b><span class="tag ${b.kind.toLowerCase()}">${b.kind}</span>${three ? '' : '<span class="tag">1φ</span>'}<span class="spacer"></span>${warnN ? `<span class="warn-t" title="คำเตือน">⚠ ${warnN}</span>` : ''}</div>
       <div class="pc-sub">${esc(b.location || '—')}${par ? ` · รับไฟจาก ${esc(par.name)}` : ''}</div>
@@ -816,7 +818,7 @@
           <div class="bigstat"><div class="label">Connected load</div><div class="v"><span data-count="${cur.conn.toFixed(2)}" data-dec="2" data-key="dc">0</span><small>kVA</small></div><div class="s">รวมทุกแผง</div></div>
           <div class="bigstat"><div class="label">Maximum demand</div><div class="v"><span data-count="${cur.dem.toFixed(2)}" data-dec="2" data-key="dd">0</span><small>kVA</small></div><div class="s">${fmt(cur.I)} A ที่ 400 V</div></div>
           <div class="bigstat"><div class="label">${s.trafo ? 'หม้อแปลง' : 'เครื่องวัดฯ'}</div><div class="v">${s.trafo ? `${s.trafo.kva}<small>kVA</small>` : esc(s.meter.size)}</div><div class="s">${utilTxt}</div></div>
-          <div class="bigstat"><div class="label">Main CB</div><div class="v" style="font-size:20px">${esc(s.mainCB.label)}</div><div class="s">IC ${s.mainCB.ic} kA · Busbar ${s.busbar} A</div></div>
+          <div class="bigstat"><div class="label">Main CB</div><div class="v" style="font-size:20px">${esc(cbShow(s.mainCB))}</div><div class="s">IC ${s.mainCB.ic} kA · Busbar ${s.busbar} A</div></div>
         </div>
         <div class="grid2">
           <div class="card"><div class="card-h"><h3>สเปกระบบประธาน</h3><span class="spacer" style="flex:1"></span><button class="btn sm" data-goto="feeder">รายละเอียด →</button></div><div class="card-b">${R.serviceHTML(result)}</div></div>
@@ -1132,7 +1134,7 @@
           ${po.board.phases !== 1 && po.balance ? `<button class="btn sm ${po.balance.mode === 'deep' ? 'on' : ''}" data-balance="${po.id}" title="จัดเฟส A/B/C ให้ต่างกันน้อยที่สุด">${I.balance}Balance Load${po.balance.mode === 'deep' ? ' ✓' : ''}</button>` : ''}</div>
         <div class="phasebars">${['A', 'B', 'C'].map((k, i) => `<div class="pbar"><span class="k">${k}</span><div class="track"><div class="fill" data-w="${(pv[i] / max * 100).toFixed(1)}" style="background:var(--ph${k})"></div></div><span class="v">${fmt(Math.round(pv[i]), 0)} VA</span></div>`).join('')}</div>
       </div></div>
-      ${f ? `<dl class="feeder-chip"><dt>Feeder CB</dt><dd>${esc(f.cb.label)} · ${f.cb.ic}kA${f.coord ? R.coordTag(f.coord) : ''}</dd><dt>สายป้อน</dt><dd>${esc(f.text)} ${R.cableShort(f.cable)}</dd><dt>ช่องเดินสาย</dt><dd>${esc(f.raceway)}</dd><dt>VD สะสม</dt><dd>${fmt(po.vdUp)}% (ถึงปลายวงจร ${fmt(po.vdTotalMax)}%)</dd></dl>`
+      ${f ? `<dl class="feeder-chip"><dt>Feeder CB</dt><dd>${esc(cbShow(f.cb))} · ${f.cb.ic}kA${f.coord ? R.coordTag(f.coord) : ''}</dd><dt>สายป้อน</dt><dd>${esc(f.text)} ${R.cableShort(f.cable)}</dd><dt>ช่องเดินสาย</dt><dd>${esc(f.raceway)}</dd><dt>VD สะสม</dt><dd>${fmt(po.vdUp)}% (ถึงปลายวงจร ${fmt(po.vdTotalMax)}%)</dd></dl>`
         : `<dl class="feeder-chip"><dt>${s.trafo ? 'หม้อแปลง' : 'มิเตอร์'}</dt><dd>${s.trafo ? s.trafo.kva + ' kVA' : esc(s.meter.size)}</dd><dt>Main CB</dt><dd>${esc(s.mainCB.label)} · ${s.mainCB.ic}kA</dd><dt>สายประธาน</dt><dd>${esc(s.mainFeeder.text)}</dd><dt>Busbar</dt><dd>${s.busbar} A</dd></dl>`}
       ${mini.length ? `<div class="card"><div class="card-b" style="padding:10px 12px"><div class="label" style="margin-bottom:6px">วงจรในแผง</div><table class="mini-sched">${mini.map((r) => `<tr${r.c.itemId && r.c.cIdx ? ` data-cbrow="${esc(po.id)}|${r.no}"` : ''}><td class="n">${r.no}</td><td><span class="dot ${['A', 'B', 'C'][r.ph]}"></span>${esc(r.c.desc)}</td>${r.c.itemId && r.c.cIdx ? R.cbCell(po.id, r.no, r.c, { grip: false }) : `<td class="r">${r.c.cb.at}A</td>`}<td class="r">${esc(r.c.cond.text)}</td><td class="x"><button class="row-x" type="button" data-del-circuit="${esc(po.id)}|${r.no}" title="ลบวงจรที่ ${r.no}" aria-label="ลบวงจรที่ ${r.no}">×</button></td></tr>`).join('')}</table></div></div>` : ''}
       ${warnsAll.length ? `<ul class="warns">${warnsAll.map((w) => `<li>${esc(w.replace(po.board.name + ': ', '').replace(po.board.name + ' · ', ''))}</li>`).join('')}</ul>` : (po.connected ? `<div class="okline">${I.check} ผ่านเกณฑ์ที่ตั้งไว้ทั้งหมด</div>` : '')}
@@ -1363,7 +1365,7 @@
         <div class="bigstat"><div class="label">Connected load</div><div class="v"><span data-count="${(result.totals.connected / 1000).toFixed(2)}" data-dec="2" data-key="tc">0</span><small>kVA</small></div><div class="s">รวมทุกแผง</div></div>
         <div class="bigstat"><div class="label">Maximum demand</div><div class="v"><span data-count="${(result.totals.demand / 1000).toFixed(2)}" data-dec="2" data-key="td">0</span><small>kVA</small></div><div class="s">${fmt(s.demandI)} A ที่ 400 V</div></div>
         <div class="bigstat"><div class="label">${s.trafo ? 'หม้อแปลง' : 'เครื่องวัดฯ'}</div><div class="v">${s.trafo ? `${s.trafo.kva}<small>kVA</small>` : esc(s.meter.size)}</div><div class="s">${s.trafo ? `ใช้งาน ${fmt(result.totals.demand / 10 / s.trafo.kva, 0)}% ของพิกัด` : (m.utility === 'MEA' ? 'การไฟฟ้านครหลวง' : 'การไฟฟ้าส่วนภูมิภาค')}</div></div>
-        <div class="bigstat"><div class="label">Main CB</div><div class="v" style="font-size:20px">${esc(s.mainCB.label)}</div><div class="s">IC ${s.mainCB.ic} kA · Busbar ${s.busbar} A</div></div>
+        <div class="bigstat"><div class="label">Main CB</div><div class="v" style="font-size:20px">${esc(cbShow(s.mainCB))}</div><div class="s">IC ${s.mainCB.ic} kA · Busbar ${s.busbar} A</div></div>
       </div>
       <div class="grid2" style="margin-bottom:16px">
         <div class="card"><div class="card-h"><h3>ระบบประธาน</h3></div><div class="card-b">${R.serviceHTML(result)}</div></div>
@@ -1407,7 +1409,7 @@
       ${p.feeder ? `<h4>สายป้อนเข้าแผง</h4>${R.stepsHTML(p.feeder.steps)}` : ''}
       ${p.circuits.filter((c) => c.cat !== 'spare').map((c) => `<details class="acc" style="margin-top:8px"><summary>CCT ${(c.slotNos || []).join(',') || '-'} · ${esc(c.desc)} <span class="muted tiny">${c.cb ? c.cb.at + 'A' : ''} ${c.cond ? c.cond.text : ''}</span></summary><div>${R.stepsHTML(c.steps)}</div></details>`).join('')}
     </div></details>`).join('');
-    return `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>หลักการที่ใช้เลือก (สรุปจากตารางนำเข้าห้องสอบ + บทที่ 6–10)</h3></div><div class="card-b">${rules}</div></div>${panels}`;
+    return `<div class="card" style="margin-bottom:16px"><div class="card-h"><h3>หลักการที่ใช้เลือก (ตามมาตรฐานการติดตั้งทางไฟฟ้าสำหรับประเทศไทย วสท. บทที่ 6–10)</h3></div><div class="card-b">${rules}</div></div>${panels}`;
   }
 
   function viewBOM() {
@@ -1428,6 +1430,7 @@
     const ck = (path, v, label, off) => `<label class="check${off ? ' dim' : ''}"><input type="checkbox" data-m="${path}" ${v ? 'checked' : ''} ${off ? 'disabled' : ''}>${label}</label>`;
     const wiring = (k, title) => `<h4>${title}</h4><div class="row2">${s('', 'ชนิดสาย', se(`${k}.cable`, cables, m[k].cable))}${s('', 'ท่อ', se(`${k}.conduit`, conduits, m[k].conduit))}</div>${s('', 'วิธีเดินสาย (ตาราง 5-47)', se(`${k}.method`, methods, m[k].method))}`;
     return `<div class="settings">
+      ${window.BrandUI ? BrandUI.settingsHTML(m) : ''}
       <div class="card"><div class="card-h"><h3>ข้อมูลโครงการ</h3></div><div class="card-b">
         ${s('', 'ชื่อโครงการ', t('name', m.name))}${s('', 'เจ้าของ', t('owner', m.owner))}${s('', 'สถานที่', t('location', m.location))}
         <div class="row2">${s('', 'ผู้ออกแบบ', t('designer', m.designer))}${s('', 'วันที่', `<input type="date" data-m="date" value="${m.date}">`)}</div>
@@ -1474,7 +1477,6 @@
         ${ck('coordinateKidFeeders', m.coordinateKidFeeders !== false, 'ประสานสายป้อนหลายชั้น (Multilevel Feeder Coordination: ลูกก่อนแม่) — เมนแผงแม่ ≥ 1.6 × CB สายป้อนแผงลูก (ป้องกันการทริปข้ามชั้น) · ต้องเปิด Auto-Selectivity ด้วย', m.autoSelectivity === false)}
         <div class="row2">${s('', 'ความสูงต่อชั้น (m) — สายป้อนแนวดิ่ง', n('floorHeight', m.floorHeight, 'min="1" max="20" step="0.1"'), 'ใช้เมื่อระบุ "ชั้นที่ติดตั้ง" ของแผงและแผงแม่')}</div>
       </div></div>
-      ${window.BrandUI ? BrandUI.settingsHTML(m) : ''}
     </div>`;
   }
 

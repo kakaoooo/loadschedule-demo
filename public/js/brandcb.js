@@ -39,6 +39,22 @@
   const ratingName = (m) => (m.type === 'MCCB' ? 'Icu' : 'Icn');
   const polesOk = (m, poles) => !poles || Math.max(...m.poles) >= poles;   // MCCB 3P ใช้แทน 2P ได้
   const nameOf = (m) => `${m.brandShort} ${m.model}`;
+  // สเปกสั้น ๆ ไว้แสดงในวงเล็บต่อท้ายรุ่น (เฉพาะหน้าจอ): MCCB "Icu 10 kA · 3P" · MCB "Type C · Icn 6 kA · 1P" · RCBO "Type C · 30 mA · Icn 6 kA · 1P"
+  function specOf(cb) {
+    const b = cb && cb.bm;
+    if (!b) return '';
+    const parts = [];
+    if (b.type === 'MCCB') parts.push(`Icu ${fmt(b.icu, 1)} kA`);
+    else {
+      const curve = String(b.trip || '').split(' (')[0];
+      if (curve) parts.push(curve);
+      if (b.type === 'RCBO' && b.rcdMA) parts.push(`${b.rcdMA} mA`);
+      parts.push(`Icn ${fmt(b.icn, 1)} kA`);
+    }
+    if (cb.poles) parts.push(`${cb.poles}P`);
+    return parts.join(' · ');
+  }
+  const labelSpec = (cb) => { const sp = specOf(cb); return `${cb.label}${sp ? ` (${sp})` : ''}`; };
   const selName = (s) => (s ? `${s.brand}${s.series ? ' ' + s.series : ''}` : GENERIC_NAME);
 
   // รุ่นที่เป็นตัวเลือกของค่าโครงการ {brand, series}: RCBO ใช้ซีรีส์เดียวกันก่อน ไม่มีจึงใช้ทุกซีรีส์ของยี่ห้อ
@@ -177,7 +193,7 @@
   }
   const cleanBoardOv = (v) => { const m = find(v); return m && m.type === 'MCCB' ? m.id : undefined; };
 
-  const API = { data: B, SRC_BRAND, SRC_GENERIC, GENERIC_NAME, find, brands, pool, rowsOf, ratingOf, ratingName, nameOf, selName, polesOk, context, apply, instKA, cleanMetaBrands, cleanItemOv, cleanBoardOv };
+  const API = { specOf, labelSpec, data: B, SRC_BRAND, SRC_GENERIC, GENERIC_NAME, find, brands, pool, rowsOf, ratingOf, ratingName, nameOf, selName, polesOk, context, apply, instKA, cleanMetaBrands, cleanItemOv, cleanBoardOv };
   root.LS_BRANDCB = API;
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
 })(typeof self !== 'undefined' ? self : this);

@@ -27,6 +27,32 @@
   }
 
   /* ---------- การ์ดตั้งค่าโครงการ ---------- */
+  // สเปกในวงเล็บ (หน้าตั้งค่า): ช่วงของซีรีส์ และสเปกของรุ่นเดี่ยว
+  const rng = (a) => { const v = a.filter((x) => x != null && !isNaN(x)); if (!v.length) return ''; const lo = Math.min(...v), hi = Math.max(...v); return lo === hi ? fmt(lo, 1) : `${fmt(lo, 1)}–${fmt(hi, 1)}`; };
+  const polesText = (m) => { const p = (m.poles || []).slice().sort((x, y) => x - y); return p.length ? (p.length === 1 ? `${p[0]}P` : `${p[0]}–${p[p.length - 1]}P`) : ''; };
+  function seriesSpec(type, brand, series) {
+    const rows = BR.rowsOf(type).filter((m) => m.brandShort === brand && m.series === series);
+    if (!rows.length) return '';
+    const ats = [].concat(...rows.map((m) => m.at || []));
+    const mccb = type === 'MCCB';
+    const parts = mccb
+      ? [`${rng(rows.map((m) => m.af))} AF`, `${rng(ats)} AT`, `Icu ${rng(rows.map((m) => m.icu))} kA`]
+      : [`${rng(ats)} A`, `Icn ${rng(rows.map((m) => m.icn))} kA`];
+    const pl = rng([].concat(...rows.map((m) => m.poles || [])));
+    if (pl) parts.push(`${pl}P`);
+    return `${rows.length} รุ่น · ${parts.join(' · ')}`;
+  }
+  function modelSpec(m) {
+    const parts = [];
+    if (m.af) parts.push(`${m.af}AF`);
+    parts.push(`${BR.ratingName(m)} ${fmt(BR.ratingOf(m), 1)} kA`);
+    if (m.type === 'MCCB' && m.ics != null) parts.push(`Ics ${fmt(m.ics, 1)} kA`);
+    if (m.curve || (m.trip && m.type !== 'MCCB')) parts.push(String(m.curve || m.trip).split(' (')[0]);
+    const pl = polesText(m); if (pl) parts.push(pl);
+    return parts.join(' · ');
+  }
+
+  /* ---------- การ์ดตั้งค่าโครงการ ---------- */
   function settingsHTML(meta) {
     if (!BR || !BR.data) return '';
     const b = isObj(meta.brands) ? meta.brands : {};
@@ -35,7 +61,8 @@
       const s = isObj(b[key]) ? b[key] : {}, list = BR.brands(type), cur = list.find((x) => x.brand === s.brand);
       return `<h4>${title}</h4><div class="row2">
         <label class="field"><span>ยี่ห้อ</span><select data-brand-set="${key}.brand">${opt('', BR.GENERIC_NAME, s.brand)}${list.map((x) => opt(x.brand, x.name, s.brand)).join('')}</select></label>
-        <label class="field"><span>ซีรีส์</span><select data-brand-set="${key}.series" ${cur ? '' : 'disabled'}>${opt('', cur ? 'ทุกซีรีส์ของยี่ห้อ (เลือกรุ่นที่พอดีให้)' : '—', s.series)}${cur ? cur.series.map((x) => opt(x, x, s.series)).join('') : ''}</select></label></div>
+        <label class="field"><span>ซีรีส์</span><select data-brand-set="${key}.series" ${cur ? '' : 'disabled'}>${opt('', cur ? 'ทุกซีรีส์ของยี่ห้อ (เลือกรุ่นที่พอดีให้)' : '—', s.series)}${cur ? cur.series.map((x) => opt(x, `${x} (${seriesSpec(type, s.brand, x)})`, s.series)).join('') : ''}</select></label></div>
+        ${cur ? `<div class="br-pick tiny">เลือก: <b>${esc(cur.name)}${s.series ? ' ' + esc(s.series) : ' · ทุกซีรีส์'}</b> <span class="br-spec">(${esc(s.series ? seriesSpec(type, s.brand, s.series) : cur.series.map((x) => seriesSpec(type, s.brand, x).split(' · ')[0]).reduce((a, x) => a + parseInt(x, 10), 0) + ' รุ่นรวม')})</span></div>` : ''}
         <div class="hint tiny muted">${hint}</div>`;
     };
     const mccbSel = isObj(b.mccb) && b.mccb.brand ? b.mccb : null;
@@ -47,7 +74,7 @@
       <p class="tiny muted">ค่าเริ่มต้น "${BR.GENERIC_NAME}" = ผลคำนวณเดิมทุกอย่าง · เลือกยี่ห้อแล้ว AT จะขยับเป็นขนาดที่รุ่นมีขาย, AF = เฟรมของรุ่น, IC = Icu (MCB ใช้ Icn) และ selectivity ใช้ค่าตัดทันทีของรุ่น</p>
       ${part('mcb', 'MCB / RCBO (วงจรย่อย)', 'MCB', 'วงจรที่ต้องมี RCD ใช้ RCBO ของยี่ห้อเดียวกัน (ไม่มี RCBO 3 เฟสในฐานข้อมูล → MCB + RCD แยก)')}
       ${part('mccb', 'MCCB (สายป้อน / ประธาน / โหลดต่อตรงที่แผงสวิตช์)', 'MCCB', 'ระบบเลือกเฟรมเล็กสุดที่มี AT ที่ต้องใช้และ Icu ≥ Ik ที่แผง')}
-      <label class="field"><span>รุ่น CB ประธาน</span><select data-brand-set="main">${opt('', mccbSel ? 'ตามค่าโครงการ (เลือกให้อัตโนมัติ)' : 'ตามค่าโครงการ', mainM ? b.main : '')}${mains.map((m) => opt(m.id, `${m.model} · ${m.af}AF · Icu ${m.icu} kA`, b.main)).join('')}${mainM && !mains.includes(mainM) ? opt(mainM.id, BR.nameOf(mainM), b.main) : ''}</select><span class="hint">หรือคลิกที่ช่อง CB ในตาราง Feeder / ตารางโหลดเพื่อเลือกรุ่นรายตัว</span></label>
+      <label class="field"><span>รุ่น CB ประธาน</span><select data-brand-set="main">${opt('', mccbSel ? 'ตามค่าโครงการ (เลือกให้อัตโนมัติ)' : 'ตามค่าโครงการ', mainM ? b.main : '')}${mains.map((m) => opt(m.id, `${m.model} (${modelSpec(m)})`, b.main)).join('')}${mainM && !mains.includes(mainM) ? opt(mainM.id, `${BR.nameOf(mainM)} (${modelSpec(mainM)})`, b.main) : ''}</select>${mainM ? `<span class="br-pick tiny">เลือก: <b>${esc(BR.nameOf(mainM))}</b> <span class="br-spec">(${esc(modelSpec(mainM))})</span></span>` : ''}<span class="hint">หรือคลิกที่ช่อง CB ในตาราง Feeder / ตารางโหลดเพื่อเลือกรุ่นรายตัว</span></label>
       <div class="br-ov">กำหนดรุ่นรายตัวไว้ <b class="num">${n}</b> ตัว ${n ? '<button class="btn ghost sm" type="button" data-brand-clear="1">↺ ล้างทั้งหมด (ใช้ค่าโครงการ)</button>' : ''}</div>
       <details class="tiny muted"><summary>แหล่งข้อมูล · ข้อสังเกต ${esc(meta2.issues.length)} รายการ</summary><p>${esc(meta2.source)} · สร้างเมื่อ ${esc(meta2.generatedAt)} จาก ${esc(meta2.files.join(', '))} (อัปเดต: วาง CSV ใหม่แล้วรัน <code>node tools/import-brands.js</code>)</p><ul>${meta2.issues.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>
     </div></div>`;
